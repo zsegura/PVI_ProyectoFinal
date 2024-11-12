@@ -13,13 +13,32 @@ namespace PVI_ProyectoFinal.Controllers
         // GET: Casa - List all Casas based on their Estado (active/inactive)
         public ActionResult Index(bool? estado = true)
         {
-            var casas = new List<Casa>();
-            using (var db = new PviProyectoFinalDB())
+            List<ModelCasa> casasList;
+
+            // Initialize database context with configuration name
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                casas = db.SpListarCasas(estado).ToList();
+                // Fetch list of casas based on their estado
+                var casas = db.SpListarCasas(estado).ToList();
+
+                // Convert each Casa to a ModelCasa
+                casasList = casas.Select(casa => new ModelCasa
+                {
+                    IdCasa = casa.IdCasa,
+                    NombreCasa = casa.NombreCasa,
+                    MetrosCuadrados = casa.MetrosCuadrados,
+                    NumeroHabitaciones = casa.NumeroHabitaciones,
+                    NumeroBanos = casa.NumeroBanos,
+                    Precio = casa.Precio,
+                    IdPersona = casa.IdPersona,
+                    FechaConstruccion = casa.FechaConstruccion,
+                    _Estado = casa.Estado
+                }).ToList();
             }
-            return View(casas);
+
+            return View(casasList);
         }
+
 
         // GET: Casa/Insertar
         public ActionResult Insertar(int? id)
