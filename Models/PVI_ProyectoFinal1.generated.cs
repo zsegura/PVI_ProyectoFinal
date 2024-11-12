@@ -90,6 +90,12 @@ namespace DataModels
 		public Cobro Idcobro { get; set; }
 
 		/// <summary>
+		/// FK__Bitacora__id_use__01142BA1 (dbo.Persona)
+		/// </summary>
+		[Association(ThisKey="IdUser", OtherKey="IdPersona", CanBeNull=false)]
+		public Persona Iduse01142BA { get; set; }
+
+		/// <summary>
 		/// FK__Bitacora__id_use__46E78A0C (dbo.Persona)
 		/// </summary>
 		[Association(ThisKey="IdUser", OtherKey="IdPersona", CanBeNull=false)]
@@ -100,6 +106,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdUser", OtherKey="IdPersona", CanBeNull=false)]
 		public Persona Iduse47DBAE { get; set; }
+
+		/// <summary>
+		/// FK_Bitacora_id_user (dbo.Persona)
+		/// </summary>
+		[Association(ThisKey="IdUser", OtherKey="IdPersona", CanBeNull=false)]
+		public Persona Iduser { get; set; }
 
 		#endregion
 	}
@@ -132,6 +144,12 @@ namespace DataModels
 		public IEnumerable<Cobro> Cobrosidcasa4Cas { get; set; }
 
 		/// <summary>
+		/// FK_Cobros_id_casa_BackReference (dbo.Cobros)
+		/// </summary>
+		[Association(ThisKey="IdCasa", OtherKey="IdCasa", CanBeNull=true)]
+		public IEnumerable<Cobro> Cobrosidcasas { get; set; }
+
+		/// <summary>
 		/// FK__Casas__id_person__49C3F6B7 (dbo.Persona)
 		/// </summary>
 		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=false)]
@@ -142,6 +160,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=false)]
 		public Persona Idperson4AB81AF { get; set; }
+
+		/// <summary>
+		/// FK_Casas_id_persona (dbo.Persona)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=false)]
+		public Persona Idpersona { get; set; }
 
 		#endregion
 	}
@@ -161,6 +185,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdCategoria", OtherKey="IdCategoria", CanBeNull=true)]
 		public IEnumerable<Servicio> Serviciosidca5165187F { get; set; }
+
+		/// <summary>
+		/// FK_Servicios_id_categoria_BackReference (dbo.Servicios)
+		/// </summary>
+		[Association(ThisKey="IdCategoria", OtherKey="IdCategoria", CanBeNull=true)]
+		public IEnumerable<Servicio> Serviciosidcategorias { get; set; }
 
 		#endregion
 	}
@@ -192,6 +222,12 @@ namespace DataModels
 		public IEnumerable<Bitacora> Bitacoraidcobroes { get; set; }
 
 		/// <summary>
+		/// FK_DetalleCobro_id_cobro_BackReference (dbo.DetalleCobro)
+		/// </summary>
+		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=true)]
+		public IEnumerable<DetalleCobro> DetalleCobroidcobroes { get; set; }
+
+		/// <summary>
 		/// FK__DetalleCo__id_co__4D94879B_BackReference (dbo.DetalleCobro)
 		/// </summary>
 		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=true)]
@@ -202,6 +238,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=true)]
 		public IEnumerable<DetalleCobro> DetalleCoidco4E88Abds { get; set; }
+
+		/// <summary>
+		/// FK_Cobros_id_casa (dbo.Casas)
+		/// </summary>
+		[Association(ThisKey="IdCasa", OtherKey="IdCasa", CanBeNull=true)]
+		public Casa Idcasa { get; set; }
 
 		/// <summary>
 		/// FK__Cobros__id_casa__4BAC3F29 (dbo.Casas)
@@ -250,6 +292,18 @@ namespace DataModels
 		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=false)]
 		public Servicio DetalleCoidse5070F { get; set; }
 
+		/// <summary>
+		/// FK_DetalleCobro_id_cobro (dbo.Cobros)
+		/// </summary>
+		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=false)]
+		public Cobro Idcobro { get; set; }
+
+		/// <summary>
+		/// FK_DetalleCobro_id_servicio (dbo.Servicios)
+		/// </summary>
+		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=false)]
+		public Servicio Idservicio { get; set; }
+
 		#endregion
 	}
 
@@ -270,6 +324,12 @@ namespace DataModels
 		#region Associations
 
 		/// <summary>
+		/// FK__Bitacora__id_use__01142BA1_BackReference (dbo.Bitacora)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdUser", CanBeNull=true)]
+		public IEnumerable<Bitacora> Bitacoraiduse01142Bas { get; set; }
+
+		/// <summary>
 		/// FK__Bitacora__id_use__46E78A0C_BackReference (dbo.Bitacora)
 		/// </summary>
 		[Association(ThisKey="IdPersona", OtherKey="IdUser", CanBeNull=true)]
@@ -282,6 +342,12 @@ namespace DataModels
 		public IEnumerable<Bitacora> Bitacoraiduse47Dbaes { get; set; }
 
 		/// <summary>
+		/// FK_Bitacora_id_user_BackReference (dbo.Bitacora)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdUser", CanBeNull=true)]
+		public IEnumerable<Bitacora> Bitacoraidusers { get; set; }
+
+		/// <summary>
 		/// FK__Casas__id_person__49C3F6B7_BackReference (dbo.Casas)
 		/// </summary>
 		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
@@ -292,6 +358,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
 		public IEnumerable<Casa> Casasidperson4AB81Afs { get; set; }
+
+		/// <summary>
+		/// FK_Casas_id_persona_BackReference (dbo.Casas)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
+		public IEnumerable<Casa> Casasidpersonas { get; set; }
 
 		#endregion
 	}
@@ -307,6 +379,12 @@ namespace DataModels
 		[Column("estado"),          Nullable          ] public bool?    Estado      { get; set; } // bit
 
 		#region Associations
+
+		/// <summary>
+		/// FK_DetalleCobro_id_servicio_BackReference (dbo.DetalleCobro)
+		/// </summary>
+		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=true)]
+		public DetalleCobro DetalleCobroidservicio { get; set; }
 
 		/// <summary>
 		/// FK__DetalleCo__id_se__4F7CD00D_BackReference (dbo.DetalleCobro)
@@ -325,6 +403,12 @@ namespace DataModels
 		/// </summary>
 		[Association(ThisKey="IdCategoria", OtherKey="IdCategoria", CanBeNull=false)]
 		public Categoria Idca5165187F { get; set; }
+
+		/// <summary>
+		/// FK_Servicios_id_categoria (dbo.Categorias)
+		/// </summary>
+		[Association(ThisKey="IdCategoria", OtherKey="IdCategoria", CanBeNull=false)]
+		public Categoria Idcategoria { get; set; }
 
 		#endregion
 	}
@@ -638,6 +722,20 @@ namespace DataModels
 			};
 
 			return dataConnection.ExecuteProc("[dbo].[spInsertarBitacora]", parameters);
+		}
+
+		#endregion
+
+		#region SpListarCasas
+
+		public static IEnumerable<Casa> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado)
+		{
+			var parameters = new []
+			{
+				new DataParameter("@Estado", @Estado, LinqToDB.DataType.Boolean)
+			};
+
+			return dataConnection.QueryProc<Casa>("[dbo].[spListarCasas]", parameters);
 		}
 
 		#endregion
