@@ -5,57 +5,27 @@
 
 <h2>Administrar Casas</h2>
 
-<button id="abrirModal" class="btn btn-primary">Crear Casa</button>
 <table class="table table-bordered table-hover">
     <tr>
-        <th>ID</th>
         <th>Nombre</th>
         <th>Metros Cuadrados</th>
         <th>Habitaciones</th>
         <th>Baños</th>
-        <th>Precio</th>
         <th>Propietario</th>
+        <th>Fecha Construcción</th>
         <th>Estado</th>
-        <th>Accion</th>
     </tr>
 
     @foreach (var casa in Model)
     {
         <tr>
-            <td>@casa.IdCasa</td>
             <td>@casa.NombreCasa</td>
             <td>@casa.MetrosCuadrados</td>
             <td>@casa.NumeroHabitaciones</td>
             <td>@casa.NumeroBanos</td>
-            <td>@casa.Precio.ToString("C")</td>
-            <td>@casa.NombrePersona</td>
+            <td>@casa.NombrePersona</td> <!-- Owner's name -->
+            <td>@casa.FechaConstruccion.ToString("d")</td> <!-- Format date as needed -->
             <td>@(casa._Estado ? "Activo" : "Inactivo")</td>
-            <td>
-                @Html.ActionLink("Modificar", "Insertar", "Casa", new { id = casa.IdCasa }, new { @class = "btn btn-primary" })
-                <button class="btn btn-warning" onclick="toggleEstado(@casa.IdCasa, @(casa._Estado ? "false" : "true"))">
-                    @(casa._Estado ? "Desactivar" : "Activar")
-                </button>
-            </td>
         </tr>
     }
 </table>
-
-@section Scripts {
-    <script>
-        function toggleEstado(idCasa, newEstado) {
-            $.ajax({
-                url: '/Casa/ToggleEstado',
-                type: 'POST',
-                data: { id: idCasa, estado: newEstado },
-                success: function (response) {
-                    alert(response);
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                    alert("An error occurred while updating the estado.");
-                }
-            });
-        }
-    </script>
-}

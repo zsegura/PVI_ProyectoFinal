@@ -6,17 +6,17 @@ using System.Web;
 
 namespace PVI_ProyectoFinal.Models
 {
-    public class ModelCasa : Casa
+    public class ModelCasa
     {
-        // Maps the Estado field as a boolean for convenience in the views
-        public bool _Estado
-        {
-            get => Estado;
-            set => Estado = value;
-        }
-
-        // Additional properties specific to the view
-        public int IdPersona { get; set; } // The ID of the owner
-        public string NombrePersona { get; set; } // Display name of the owner for the dropdown
+        public int IdCasa { get; set; }  // This can be kept as an identifier, even if not displayed in the view
+        public string NombreCasa { get; set; }
+        public int MetrosCuadrados { get; set; }
+        public int NumeroBanos { get; set; }
+        public int NumeroHabitaciones { get; set; }
+        public DateTime FechaConstruccion { get; set; }
+        public bool _Estado { get; set; }
+        public string NombrePersona { get; set; }  // Owner's name
     }
+
+
 }

@@ -728,14 +728,27 @@ namespace DataModels
 
 		#region SpListarCasas
 
-		public static IEnumerable<Casa> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado)
+		public static IEnumerable<SpListarCasasResult> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado)
 		{
 			var parameters = new []
 			{
 				new DataParameter("@Estado", @Estado, LinqToDB.DataType.Boolean)
 			};
 
-			return dataConnection.QueryProc<Casa>("[dbo].[spListarCasas]", parameters);
+			return dataConnection.QueryProc<SpListarCasasResult>("[dbo].[spListarCasas]", parameters);
+		}
+
+		public partial class SpListarCasasResult
+		{
+			[Column("id_casa")            ] public int      Id_casa             { get; set; }
+			[Column("nombre_casa")        ] public string   Nombre_casa         { get; set; }
+			[Column("metros_cuadrados")   ] public int      Metros_cuadrados    { get; set; }
+			[Column("numero_habitaciones")] public int      Numero_habitaciones { get; set; }
+			[Column("numero_banos")       ] public int      Numero_banos        { get; set; }
+			[Column("id_persona")         ] public int      Id_persona          { get; set; }
+			[Column("fecha_construccion") ] public DateTime Fecha_construccion  { get; set; }
+			[Column("estado")             ] public bool     Estado              { get; set; }
+			[Column("propietario_nombre") ] public string   Propietario_nombre  { get; set; }
 		}
 
 		#endregion
