@@ -14,7 +14,7 @@ namespace PVI_ProyectoFinal.Models
         public int NumeroBanos { get; set; }
         public int NumeroHabitaciones { get; set; }
         public DateTime FechaConstruccion { get; set; }
-        public bool _Estado { get; set; }
+        public bool Estado { get; set; }
         public string NombrePersona { get; set; }  // Owner's name
     }
 

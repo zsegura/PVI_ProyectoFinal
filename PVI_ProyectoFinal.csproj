@@ -262,7 +262,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\DropDown.cs" />
+    <Compile Include="Models\ModelBitacora.cs" />
     <Compile Include="Models\ModelCasa.cs" />
+    <Compile Include="Models\ModelCategoria.cs" />
+    <Compile Include="Models\ModelCobro.cs" />
+    <Compile Include="Models\ModelPersona.cs" />
+    <Compile Include="Models\ModelServicio.cs" />
     <Compile Include="Models\PVI_ProyectoFinal1.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -343,7 +348,9 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Casa\Index.cshtml" />
+    <Content Include="Views\Casa\CasasGestionar.cshtml" />
+    <Content Include="Views\Casa\ServiciosGestionar.cshtml" />
+    <Content Include="Views\Casa\CobrosGestionar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
