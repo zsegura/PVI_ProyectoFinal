@@ -23,7 +23,7 @@ namespace DataModels
 	/// <summary>
 	/// Database       : PVI_ProyectoFinal
 	/// Data Source    : IN3114
-	/// Server Version : 16.00.1130
+	/// Server Version : 16.00.1135
 	/// </summary>
 	public partial class PviProyectoFinalDB : LinqToDB.Data.DataConnection
 	{
@@ -787,6 +787,21 @@ namespace DataModels
 			};
 
 			return dataConnection.ExecuteProc("[dbo].[sp_renamediagram]", parameters);
+		}
+
+		#endregion
+
+		#region SpRetornaCasasActivas
+
+		public static IEnumerable<SpRetornaCasasActivasResult> SpRetornaCasasActivas(this PviProyectoFinalDB dataConnection)
+		{
+			return dataConnection.QueryProc<SpRetornaCasasActivasResult>("[dbo].[SpRetornaCasasActivas]");
+		}
+
+		public partial class SpRetornaCasasActivasResult
+		{
+			[Column("id_casa")    ] public int    Id_casa     { get; set; }
+			[Column("nombre_casa")] public string Nombre_casa { get; set; }
 		}
 
 		#endregion
