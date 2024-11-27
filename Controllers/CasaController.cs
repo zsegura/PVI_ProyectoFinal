@@ -12,14 +12,7 @@ namespace PVI_ProyectoFinal.Controllers
     {
         // GET: Casa - List all Casas based on their Estado (active/inactive)
         
-        
-        //Another comment
 
-        // nueva actuailzacion 
-
-        //3rd comment
-
-        // 4 comment
 
     }
 }
