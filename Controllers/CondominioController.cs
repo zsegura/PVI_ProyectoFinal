@@ -13,7 +13,17 @@ namespace PVI_ProyectoFinal.Controllers
     {
         // GET: Casa - List all Casas based on their Estado (active/inactive)
         
-        public ActionResult 
+        public ActionResult ConsultarCobros()
+        {
+            var list = new List<SpConsultarCobrosResult>();
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
+                list = db.SpConsultarCobros(null, null, null, null).ToList();
+
+
+            }
+            return View(list);
+        }
 
     }
 }

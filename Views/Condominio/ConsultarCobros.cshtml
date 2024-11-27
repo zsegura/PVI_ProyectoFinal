@@ -1,7 +1,31 @@
-﻿
+﻿@model List<DataModels.PviProyectoFinalDBStoredProcedures.SpConsultarCobrosResult>
 @{
     ViewBag.Title = "ConsultarCobros";
 }
 
-<h2>ConsultarCobros</h2>
+<h2>Consultar Cobros</h2>
 
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>#Cobro</th>
+        <th>#Casa</th>
+        <th>#Propietario</th>
+        <th>Periodo</th>
+        <th>Estado</th>
+        <th></th>
+    </tr>
+
+    @foreach (var cobro in Model)
+    {
+        <tr>
+            <td>@cobro.Id_cobro</td>
+            <td>@cobro.Nombre_casa</td>
+            <td>@cobro.Cliente</td>
+            <td>@($"{cobro.Mes:D2}/{cobro.Anno}")</td>
+            <td>@cobro.Estado</td>
+            <td>
+                @Html.ActionLink("Consultar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
+            </td>
+        </tr>
+    }
+</table>
