@@ -256,10 +256,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\CasaController.cs" />
-    <Compile Include="Controllers\CobroController.cs" />
+    <Compile Include="Controllers\CondominioController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ServicioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -350,14 +348,14 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Casa\CasasGestionar.cshtml" />
-    <Content Include="Views\Casa\ServiciosGestionar.cshtml" />
-    <Content Include="Views\Casa\CobrosGestionar.cshtml" />
+    <Content Include="Views\Condominio\ConsultarCobros.cshtml" />
+    <Content Include="Views\Condominio\GestionarCobro.cshtml" />
+    <Content Include="Views\Condominio\Pagar.cshtml" />
+    <Content Include="Views\Condominio\GestionarCasas.cshtml" />
+    <Content Include="Views\Condominio\GestionarServicios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Cobro\" />
-    <Folder Include="Views\Servicio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
