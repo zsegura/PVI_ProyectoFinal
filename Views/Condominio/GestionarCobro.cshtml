@@ -32,30 +32,66 @@
 
     <div class="mb-3">
         <label class="form-label" for="ServiciosSeleccionados">Servicios:</label>
-        <select id="ServiciosSeleccionados" name="ServiciosSeleccionados" multiple="multiple" class="form-control">
-        </select>
+        @foreach (var servicio in ViewBag.Servicios as IEnumerable<SelectListItem>)
+        {
+            <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       id="service_@servicio.Value"
+                       name="ServiciosSeleccionados"
+                       value="@servicio.Value"
+                       @(Model.ServiciosSeleccionados != null && Model.ServiciosSeleccionados.Contains(Convert.ToInt32(servicio.Value)) ? "checked" : "") />
+                <label class="form-check-label" for="service_@servicio.Value">
+                    @servicio.Text
+                </label>
+            </div>
+        }
     </div>
+
+
 
     <input type="submit" class="btn btn-primary" value="Guardar Cobro" />
 </form>
 
 @section Scripts {
     <script type="text/javascript">
-        // Function to load dropdown data
-        function loadDropdown(url, ddl, selected) {
+
+        function loadDropdown(url, dropdown, selectedValue) {
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            dropdown.empty();
+            dropdown.append('<option value="">Seleccione una casa</option>'); // Default option
+            $.each(data, function (index, item) {
+                const isSelected = item.Id === selectedValue ? 'selected' : '';
+                dropdown.append(`<option value="${item.Id}" ${isSelected}>${item.Nombre}</option>`);
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error(`Error loading dropdown: ${textStatus} - ${errorThrown}`);
+        }
+    });
+}
+
+
+        // Function to load checkboxes for services
+        function loadCheckboxes(url, container, selected) {
             $.ajax({
                 url: url,
                 dataType: 'json',
                 type: 'GET',
                 success: function (data) {
-                    ddl.empty();
-                    ddl.append("<option value=''>Seleccione una opción</option>");
+                    container.empty(); // Clear the container
                     $(data).each(function () {
-                        var option = new Option(this.Nombre, this.Id);
-                        if (this.Id == selected) {
-                            option.selected = true;
-                        }
-                        ddl.append(option);
+                        const isChecked = selected.includes(this.Id); // Pre-select if in the list
+                        const checkbox = `
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="service_${this.Id}" name="ServiciosSeleccionados" value="${this.Id}" ${isChecked ? 'checked' : ''}>
+                                <label class="form-check-label" for="service_${this.Id}">${this.Nombre}</label>
+                            </div>`;
+                        container.append(checkbox);
                     });
                 },
                 error: function (jQxhr, textStatus, errorThrown) {
@@ -64,15 +100,35 @@
             });
         }
 
-        // Initialize dropdowns on document ready
+        // Validate that at least one service is selected
+        function validateServices() {
+            const selectedServices = $('#ServiciosCheckboxContainer input:checked');
+            if (selectedServices.length === 0) {
+                $('#ServiciosError').show();
+                return false;
+            } else {
+                $('#ServiciosError').hide();
+                return true;
+            }
+        }
+
         $(document).ready(function () {
-            var idCasa = @(Model != null && Model.IdCasa != 0 ? Model.IdCasa.ToString() : "null");
+    const idCasa = @(Model != null && Model.IdCasa != 0 ? Model.IdCasa.ToString() : "null");
+    const selectedServices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ServiciosSeleccionados ?? new List<int>()));
 
-            // Load Casas
-            loadDropdown('/Condominio/GetCasas', $('#IdCasa'), idCasa);
+    // Load Casas
+    loadDropdown('/Condominio/GetCasas', $('#IdCasa'), idCasa);
 
-            // Load Servicios
-            loadDropdown('/Condominio/GetServicios', $('#ServiciosSeleccionados'), null);
-        });
+    // Load Servicios as checkboxes
+    loadCheckboxes('/Condominio/GetServicios', $('#ServiciosContainer'), selectedServices);
+
+    // Add validation to the form
+    $('#cobroForm').on('submit', function (e) {
+        if (!validateServices()) {
+            e.preventDefault(); // Prevent form submission if validation fails
+        }
+    });
+});
+
     </script>
 }

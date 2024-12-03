@@ -15,5 +15,7 @@ namespace PVI_ProyectoFinal.Models
         public string Estado { get; set; }
         public string Cliente { get; set; }
         public List<int> ServiciosSeleccionados { get; set; }
+
     }
+
 }

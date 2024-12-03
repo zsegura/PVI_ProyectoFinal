@@ -661,6 +661,26 @@ namespace DataModels
 
 		#endregion
 
+		#region SpGetServiciosPorCobro
+
+		public static IEnumerable<SpGetServiciosPorCobroResult> SpGetServiciosPorCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro)
+		{
+			var parameters = new []
+			{
+				new DataParameter("@IdCobro", @IdCobro, LinqToDB.DataType.Int32)
+			};
+
+			return dataConnection.QueryProc<SpGetServiciosPorCobroResult>("[dbo].[spGetServiciosPorCobro]", parameters);
+		}
+
+		public partial class SpGetServiciosPorCobroResult
+		{
+			[Column("id_servicio")] public int    Id_servicio { get; set; }
+			[Column("nombre")     ] public string Nombre      { get; set; }
+		}
+
+		#endregion
+
 		#region SpHelpdiagramdefinition
 
 		public static IEnumerable<SpHelpdiagramdefinitionResult> SpHelpdiagramdefinition(this PviProyectoFinalDB dataConnection, string @diagramname, int? @ownerId)
@@ -733,7 +753,7 @@ namespace DataModels
 
 		#region SpListarCasas
 
-		public static IEnumerable<SpListarCasasResult> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado, object value)
+		public static IEnumerable<SpListarCasasResult> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado)
 		{
 			var parameters = new []
 			{

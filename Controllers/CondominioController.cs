@@ -35,27 +35,36 @@ namespace PVI_ProyectoFinal.Controllers
                         .Select(c => new ModelCobro
                         {
                             Id = c.Id_cobro,
-                            Monto = c.Monto ?? 0,    // Handle nullable types
-                            Mes = c.Mes ?? 1,        // Handle nullable types
-                            Anno = c.Anno ?? 2024,   // Handle nullable types
+                            Monto = c.Monto ?? 0,
+                            Mes = c.Mes ?? 1,
+                            Anno = c.Anno ?? 2024,
                             Estado = c.Estado,
-                            Cliente = c.Cliente
+                            Cliente = c.Cliente,
+                            ServiciosSeleccionados = db.SpGetServiciosPorCobro(c.Id_cobro)
+                                .Select(s => s.Id_servicio)
+                                .ToList() // Retrieve selected services
                         }).FirstOrDefault();
                 }
 
-                // Load dropdown options for Casas using the stored procedure
                 ViewBag.Casas = db.SpRetornaCasasActivas()
                     .Select(c => new { IdCasa = c.Id_casa, NombreCasa = c.Nombre_casa })
                     .ToList();
 
-                // Load dropdown options for Servicios
-                ViewBag.Servicios = db.Servicios
-                    .Where(s => s.Estado == true)
-                    .Select(s => new { s.IdServicio, s.Nombre })
-                    .ToList();
+                ViewBag.Servicios = new SelectList(
+    db.Servicios.Where(s => s.Estado == true)
+                .Select(s => new { s.IdServicio, s.Nombre })
+                .ToList(),
+    "IdServicio",
+    "Nombre"
+);
+
+
             }
             return View(cobro);
         }
+
+
+
 
         [HttpPost]
         public ActionResult GestionarCobro(ModelCobro cobro)
@@ -95,22 +104,9 @@ namespace PVI_ProyectoFinal.Controllers
             }
 
             ViewBag.Resultado = resultado;
-
-            // Reload dropdown options for Casas using the stored procedure
-            using (var db = new PviProyectoFinalDB("MyDatabase"))
-            {
-                ViewBag.Casas = db.SpRetornaCasasActivas()
-                    .Select(c => new { IdCasa = c.Id_casa, NombreCasa = c.Nombre_casa })
-                    .ToList();
-
-                ViewBag.Servicios = db.Servicios
-                    .Where(s => s.Estado == true)
-                    .Select(s => new { s.IdServicio, s.Nombre })
-                    .ToList();
-            }
-
-            return View(cobro);
+            return RedirectToAction("ConsultarCobros");
         }
+
 
         // New AJAX method: GetCasas
         public JsonResult GetCasas()
@@ -147,7 +143,7 @@ namespace PVI_ProyectoFinal.Controllers
             var list = new List<SpListarCasasResult>();
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                list = db.SpListarCasas(null, null).ToList();
+                list = db.SpListarCasas(null).ToList();
             }
             return View(list);
         }
