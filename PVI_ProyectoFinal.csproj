@@ -353,6 +353,7 @@
     <Content Include="Views\Condominio\Pagar.cshtml" />
     <Content Include="Views\Condominio\GestionarCasas.cshtml" />
     <Content Include="Views\Condominio\GestionarServicios.cshtml" />
+    <Content Include="Views\Condominio\ConsultarCasas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

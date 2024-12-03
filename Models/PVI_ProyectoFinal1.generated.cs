@@ -728,7 +728,7 @@ namespace DataModels
 
 		#region SpListarCasas
 
-		public static IEnumerable<SpListarCasasResult> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado)
+		public static IEnumerable<SpListarCasasResult> SpListarCasas(this PviProyectoFinalDB dataConnection, bool? @Estado, object value)
 		{
 			var parameters = new []
 			{

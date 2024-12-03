@@ -1,6 +1,7 @@
 ﻿using DataModels;
 using PVI_ProyectoFinal.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -137,5 +138,25 @@ namespace PVI_ProyectoFinal.Controllers
                 return Json(servicios, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
+        // GET: ConsultarCasas
+        public ActionResult ConsultarCasas()
+        {
+            var list = new List<SpListarCasasResult>();
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
+                list = db.SpListarCasas(null, null).ToList();
+            }
+            return View(list);
+        }
+
+
+
+
+    
+
+
     }
 }

@@ -1,0 +1,38 @@
+﻿@model List<DataModels.PviProyectoFinalDBStoredProcedures.SpListarCasasResult>
+@{
+    ViewBag.Title = "ConsultarCasas";
+}
+
+<h2>ConsultarCasas</h2>
+
+<button id="abrirModal" class="btn btn-primary">Nueva Casa</button>
+
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Nombre de la Casa</th>
+        <th>Mts Cuadrados</th>
+        <th>Núm Habitaciones</th>
+        <th>Núm Baños</th>
+        <th># Propietario</th>
+        <th>Fecha Contrucción</th>
+        <th>Estado</th>
+        <th></th>
+    </tr>
+
+    @foreach (var casa in Model)
+    {
+        <tr>
+            <td>@casa.Id_casa</td>
+            <td>@casa.Nombre_casa</td>
+            <td>@casa.Metros_cuadrados</td>
+            <td>@casa.Numero_banos</td>
+            <td>@casa.Id_persona</td>
+            <td>@casa.Fecha_construccion</td>
+            <td>@casa.Estado</td>
+            <td>
+                @Html.ActionLink("Consultar", "GestionarCasas", "Condominio", new { id = casa.Id_casa }, new { @class = "btn btn-primary" })
+            </td>
+        </tr>
+    }
+</table>
