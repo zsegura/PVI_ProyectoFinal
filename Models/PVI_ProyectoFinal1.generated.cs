@@ -64,7 +64,12 @@ namespace DataModels
 
 		partial void InitDataContext  ();
 		partial void InitMappingSchema();
-	}
+
+        internal IEnumerable<PviProyectoFinalDBStoredProcedures.SpListarCasasResult> SpListarCasas()
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 	[Table(Schema="dbo", Name="Bitacora")]
 	public partial class Bitacora
