@@ -36,3 +36,72 @@
         </tr>
     }
 </table>
+
+
+<div id="dialog" title="Registrar Casa" style="display: none;">
+    <form id="formCasa">
+
+
+        <div class="form-group">
+            <label for="NombreCasa">Nombre de la Casa:</label>
+            <input type="text" id="NombreCasa" name="NombreCasa" class="form-control" maxlength="100" required />
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="MetrosCuadrados">Metros Cuadrados:</label>
+            <input type="number" id="MetrosCuadrados" name="MetrosCuadrados" class="form-control" required min="1" />
+        </div>
+
+        <div class="form-group">
+            <label for="NumeroHabitaciones">Numero deHabitaciones:</label>
+            <input type="number" id="NumeroHabitaciones" name="NumeroHabitaciones" class="form-control" required min="1" />
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="NumeroHabitaciones">Numero de Habitaciones:</label>
+            <input type="number" id="NumeroHabitaciones" name="NumeroHabitaciones" class="form-control" required min="1" />
+        </div>
+
+
+        <div class="form-group">
+            <label for="NumeroBanos">NumeroBanos:</label>
+            <input type="number" id="NumeroBanos" name="NumeroBanos" class="form-control" required min="1" />
+        </div>
+
+        <div class="form-group">
+            <label for="IdPersona">Cliente:</label>
+            <select id="IdPersona" name="IdPersona" class="form-control" required>
+                <option value="">Seleccione un Cliente</option>
+            </select>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="FechaConstruccion">Fecha de Construccion:</label>
+            <input type="date" id="FechaConstruccion" name="FechaConstruccion" class="form-control" required min="1" />
+        </div>
+
+
+
+        <button type="button" id="btnInsertar" class="btn btn-primary">Guardar</button>
+
+
+    </form>
+
+
+    Menú desplegable para completar la Perosna-->
+    $.getJSON('@Url.Action("SpRetornaPersona", "Condominio")', function (data) {
+    $("#IdPersona").empty().append('<option value="">Seleccione un cliente</option>');
+    $.each(data, function (i, item) {
+    $("#IdPersona").append('<option value="' + item.Id + '">' + item.Nombre + '</option>');
+    });
+    });
+
+
+
+</div>
