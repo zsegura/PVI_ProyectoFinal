@@ -3,6 +3,7 @@ using PVI_ProyectoFinal.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using static DataModels.PviProyectoFinalDBStoredProcedures;
@@ -170,95 +171,117 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        // GET: Crear Casa
-        public ActionResult CrearCasa(int? id)
-        {
-            var casa = new ModelCasa();
+        //// GET: Crear Casa
+        //public ActionResult CrearCasa(int? id)
+        //{
+        //    var casa = new ModelCasa();
 
-            using (var db = new PviProyectoFinalDB("MyDatabase"))
-            {
+        //    using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //    {
 
-                casa = db.SpListarCasas().Select(e => new ModelCasa
-
-
-                {
-                    IdCasa = casa.IdCasa,
-                    NombreCasa = casa.NombreCasa,
-                    MetrosCuadrados = casa.MetrosCuadrados,
-                    NumeroHabitaciones = casa.NumeroHabitaciones,
-                    NumeroBanos = casa.NumeroBanos,
-                    NombrePersona = casa.NombrePersona,
-                    FechaConstruccion = casa.FechaConstruccion,
-                    Estado = casa.Estado
-
-                }).FirstOrDefault();
-            }
-            return View(casa);
-        }
+        //        casa = db.SpListarCasas().Select(e => new ModelCasa
 
 
+        //        {
+        //            IdCasa = casa.IdCasa,
+        //            NombreCasa = casa.NombreCasa,
+        //            MetrosCuadrados = casa. MetrosCuadrados ,
+        //            NumeroHabitaciones = casa.NumeroHabitaciones,
+        //            NumeroBanos = casa.NumeroBanos,
+        //            NombrePersona = casa.NombrePersona,
+        //            FechaConstruccion = casa.FechaConstruccion,
+        //            Estado = casa.Estado,
 
-
-        //obtebnemos los datos menu DropDown
-        public JsonResult Personas()
-        {
-            try
-            {
-                var resultado = new List<DropDown>();
-                using (var db = new PviProyectoFinalDB("MyDatabase"))
-                {
-                    resultado = db.SpRetornaPersona() 
-                                  .Select(r => new DropDown
-                                   {
-                                       Id = r.IdPersona,
-                                       Nombre = r.Nombre
-                                   })
-                                  .ToList();
-                }
-                return Json(resultado, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = $"Error fetching representantes: {ex.Message}" }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        //        }).FirstOrDefault();
+        //    }
+        //    return View(casa);
+        //}
 
 
 
 
+        ////obtebnemos los datos menu DropDown
+        //public JsonResult Personas()
+        //{
+        //    try
+        //    {
+        //        var resultado = new List<DropDown>();
+        //        using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //        {
+        //            resultado = db.() FALTA P/*ROCEIMIENTO ALMACENADO  */
+        //                          .Select(r => new DropDown
+        //                          {
+        //                              Id = r.IdRepresentanteLegal,
+        //                              Nombre = r.Nombre
+        //                          })
+        //                          .ToList();
+        //        }
+        //        return Json(resultado, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { error = $"Error fetching representantes: {ex.Message}" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
+
+
+
+        //[HttpPost]
+        //public JsonResult CrearCasa(ModelCasa casa)
+        //{
+        //    string resultado;
+        //    try
+        //    {
+        //        using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //        {
+        //            db.SpGestionarCasa(
+        //                casa.NombreCasa,
+        //                casa.MetrosCuadrados,
+        //               casa.NumeroHabitaciones,
+        //                casa.NumeroBanos,
+        //                casa.NombrePersona,
+        //                casa.FechaConstruccion,
+        //                casa.Estado
+
+        //            );
+        //            resultado = "La casa ha sido registrada exitosamente.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultado = $"Error al registrar la casa: {ex.Message}";
+        //    }
+        //    return Json(resultado);
+        //}
+
+
+        //New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
         [HttpPost]
-        public JsonResult CrearCasa(ModelCasa casa)
+        public ActionResult EliminarCobro(int id)
         {
             string resultado;
             try
             {
                 using (var db = new PviProyectoFinalDB("MyDatabase"))
                 {
-                    db.SpcrearCasa(
-                        casa.NombreCasa,
-                        casa.MetrosCuadrados,
-                       casa.NumeroHabitaciones,
-                        casa.NumeroBanos,
-                        casa.NombrePersona,
-                        casa.FechaConstruccion,
-                        casa.Estado
-
-                    );
-                    resultado = "La casa ha sido registrada exitosamente.";
+                    db.SpEliminarCobro(id, 1); // Assuming 1 is the authenticated user's ID
+                    resultado = "Cobro eliminado exitosamente.";
                 }
             }
             catch (Exception ex)
             {
-                resultado = $"Error al registrar la casa: {ex.Message}";
+                resultado = $"Error al eliminar el cobro: {ex.Message}";
             }
-            return Json(resultado);
+
+            TempData["Resultado"] = resultado;
+            return RedirectToAction("ConsultarCobros");
         }
 
 
 
 
-
     }
-    
+
 
 }

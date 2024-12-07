@@ -64,12 +64,7 @@ namespace DataModels
 
 		partial void InitDataContext  ();
 		partial void InitMappingSchema();
-
-        internal IEnumerable<PviProyectoFinalDBStoredProcedures.SpListarCasasResult> SpListarCasas()
-        {
-            throw new NotImplementedException();
-        }
-    }
+	}
 
 	[Table(Schema="dbo", Name="Bitacora")]
 	public partial class Bitacora
@@ -827,6 +822,47 @@ namespace DataModels
 		{
 			[Column("id_casa")    ] public int    Id_casa     { get; set; }
 			[Column("nombre_casa")] public string Nombre_casa { get; set; }
+		}
+
+		#endregion
+
+		#region SpRetornaPersona
+
+		public static IEnumerable<SpRetornaPersonaResult> SpRetornaPersona(this PviProyectoFinalDB dataConnection)
+		{
+			var ms = dataConnection.MappingSchema;
+
+			return dataConnection.QueryProc(dataReader =>
+				new SpRetornaPersonaResult
+				{
+					Id_persona       = Converter.ChangeTypeTo<int>      (dataReader.GetValue(0), ms),
+					Nombre           = Converter.ChangeTypeTo<string>   (dataReader.GetValue(1), ms),
+					Apellido         = Converter.ChangeTypeTo<string>   (dataReader.GetValue(2), ms),
+					Direccion        = Converter.ChangeTypeTo<string>   (dataReader.GetValue(3), ms),
+					Email            = Converter.ChangeTypeTo<string>   (dataReader.GetValue(4), ms),
+					Telefono         = Converter.ChangeTypeTo<string>   (dataReader.GetValue(5), ms),
+					Column7          = Converter.ChangeTypeTo<string>   (dataReader.GetValue(6), ms),
+					Fecha_nacimiento = Converter.ChangeTypeTo<DateTime?>(dataReader.GetValue(7), ms),
+					Contrasena       = Converter.ChangeTypeTo<string>   (dataReader.GetValue(8), ms),
+					Estado           = Converter.ChangeTypeTo<bool?>    (dataReader.GetValue(9), ms),
+					Tipo_persona     = Converter.ChangeTypeTo<string>   (dataReader.GetValue(10), ms),
+				},
+				"[dbo].[spRetornaPersona]");
+		}
+
+		public partial class SpRetornaPersonaResult
+		{
+			[Column("id_persona")      ] public int       Id_persona       { get; set; }
+			[Column("nombre")          ] public string    Nombre           { get; set; }
+			[Column("apellido")        ] public string    Apellido         { get; set; }
+			[Column("direccion")       ] public string    Direccion        { get; set; }
+			[Column("email")           ] public string    Email            { get; set; }
+			[Column("telefono")        ] public string    Telefono         { get; set; }
+			[Column("direccion")       ] public string    Column7          { get; set; }
+			[Column("fecha_nacimiento")] public DateTime? Fecha_nacimiento { get; set; }
+			[Column("contrasena")      ] public string    Contrasena       { get; set; }
+			[Column("estado")          ] public bool?     Estado           { get; set; }
+			[Column("tipo_persona")    ] public string    Tipo_persona     { get; set; }
 		}
 
 		#endregion

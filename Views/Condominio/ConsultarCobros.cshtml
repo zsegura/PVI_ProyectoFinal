@@ -1,5 +1,11 @@
 ﻿@model List<DataModels.PviProyectoFinalDBStoredProcedures.SpConsultarCobrosResult>
 
+@if (TempData["Resultado"] != null)
+{
+    <div class="alert alert-info">@TempData["Resultado"]</div>
+}
+
+
 <h2>Consultar Cobros</h2>
 
 <table class="table table-bordered table-hover">
@@ -25,6 +31,14 @@
                 <td>
                     @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
                 </td>
+                <td>
+                    @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
+                    <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@cobro.Id_cobro" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
+                    </form>
+                </td>
+
             </tr>
         }
     </tbody>
