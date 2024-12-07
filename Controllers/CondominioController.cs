@@ -22,46 +22,63 @@ namespace PVI_ProyectoFinal.Controllers
             return View(list);
         }
 
-        // GET: GestionarCobro
         public ActionResult GestionarCobro(int? id)
         {
-            var cobro = new ModelCobro();
+            var cobro = new ModelCobro
+            {
+                ServiciosSeleccionados = new List<int>() // Initialize as an empty list
+            };
+
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
                 if (id != null && id > 0)
                 {
-                    cobro = db.SpConsultarCobros(null, null, null, true)
+                    var cobroResult = db.SpConsultarCobros(null, null, null, true)
                         .Where(c => c.Id_cobro == id)
-                        .Select(c => new ModelCobro
-                        {
-                            Id = c.Id_cobro,
-                            Monto = c.Monto ?? 0,
-                            Mes = c.Mes ?? 1,
-                            Anno = c.Anno ?? 2024,
-                            Estado = c.Estado,
-                            Cliente = c.Cliente,
-                            ServiciosSeleccionados = db.SpGetServiciosPorCobro(c.Id_cobro)
-                                .Select(s => s.Id_servicio)
-                                .ToList() // Retrieve selected services
-                        }).FirstOrDefault();
+                        .ToList(); // Ensure the reader is closed
+
+                    cobro = cobroResult.Select(c => new ModelCobro
+                    {
+                        Id = c.Id_cobro,
+                        Monto = c.Monto ?? 0,
+                        Mes = c.Mes ?? 1,
+                        Anno = c.Anno ?? 2024,
+                        Estado = c.Estado,
+                        Cliente = c.Cliente,
+                        Casa = c.Nombre_casa,
+                        ServiciosSeleccionados = db.SpGetServiciosPorCobro(c.Id_cobro)
+                            .Select(s => s.Id_servicio)
+                            .ToList()
+                    }).FirstOrDefault();
+
+                    // If no servicios are returned, initialize the list
+                    if (cobro.ServiciosSeleccionados == null)
+                    {
+                        cobro.ServiciosSeleccionados = new List<int>();
+                    }
                 }
 
+                // Populate dropdown for Casas
                 ViewBag.Casas = db.SpRetornaCasasActivas()
-                    .Select(c => new { IdCasa = c.Id_casa, NombreCasa = c.Nombre_casa })
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.Id_casa.ToString(),
+                        Text = c.Nombre_casa
+                    })
                     .ToList();
 
-                ViewBag.Servicios = new SelectList(
-    db.Servicios.Where(s => s.Estado == true)
-                .Select(s => new { s.IdServicio, s.Nombre })
-                .ToList(),
-    "IdServicio",
-    "Nombre"
-);
-
-
+                // Populate dropdown for Servicios
+                ViewBag.Servicios = db.Servicios.Where(s => s.Estado == true)
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.IdServicio.ToString(),
+                        Text = s.Nombre
+                    })
+                    .ToList();
             }
             return View(cobro);
         }
+
 
 
 
@@ -76,6 +93,7 @@ namespace PVI_ProyectoFinal.Controllers
                 {
                     if (cobro.Id == 0)
                     {
+                        // Insert new Cobro
                         db.SpCrearCobro(
                             cobro.IdCasa,
                             cobro.Mes,
@@ -84,18 +102,18 @@ namespace PVI_ProyectoFinal.Controllers
                             string.Join(",", cobro.ServiciosSeleccionados ?? new List<int>()),
                             1 // Assuming authenticated user ID
                         );
-                        resultado = "Cobro creado exitosamente.";
                     }
                     else
                     {
+                        // Update existing Cobro
                         db.SpActualizarCobro(
                             cobro.Id,
                             cobro.Monto,
                             string.Join(",", cobro.ServiciosSeleccionados ?? new List<int>()),
                             1 // Assuming authenticated user ID
                         );
-                        resultado = "Cobro actualizado exitosamente.";
                     }
+                    resultado = "Cobro actualizado exitosamente.";
                 }
             }
             catch (Exception ex)
@@ -106,6 +124,7 @@ namespace PVI_ProyectoFinal.Controllers
             ViewBag.Resultado = resultado;
             return RedirectToAction("ConsultarCobros");
         }
+
 
 
         // New AJAX method: GetCasas
