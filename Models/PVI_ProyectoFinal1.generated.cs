@@ -529,6 +529,30 @@ namespace DataModels
 
 		#endregion
 
+		#region SpCrearCasa
+
+		public static int SpCrearCasa(this PviProyectoFinalDB dataConnection, string @nombreCasa, int? @metrosCuadrados, int? @numeroHabitaciones, int? @numeroBanos, decimal? @precio, int? @idPersona, DateTime? @fechaConstruccion, bool? @estado)
+		{
+			var parameters = new []
+			{
+				new DataParameter("@nombre_casa",         @nombreCasa,         LinqToDB.DataType.NVarChar)
+				{
+					Size = 225
+				},
+				new DataParameter("@metros_cuadrados",    @metrosCuadrados,    LinqToDB.DataType.Int32),
+				new DataParameter("@numero_habitaciones", @numeroHabitaciones, LinqToDB.DataType.Int32),
+				new DataParameter("@numero_banos",        @numeroBanos,        LinqToDB.DataType.Int32),
+				new DataParameter("@precio",              @precio,             LinqToDB.DataType.Decimal),
+				new DataParameter("@id_persona",          @idPersona,          LinqToDB.DataType.Int32),
+				new DataParameter("@fecha_construccion",  @fechaConstruccion,  LinqToDB.DataType.Date),
+				new DataParameter("@estado",              @estado,             LinqToDB.DataType.Boolean)
+			};
+
+			return dataConnection.ExecuteProc("[dbo].[SpCrearCasa]", parameters);
+		}
+
+		#endregion
+
 		#region SpCrearCobro
 
 		public static int SpCrearCobro(this PviProyectoFinalDB dataConnection, int? @IdCasa, int? @Mes, int? @Anno, decimal? @Monto, string @ServiciosSeleccionados, int? @IdPersona)
