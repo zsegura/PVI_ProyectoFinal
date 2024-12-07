@@ -8,6 +8,10 @@
 
 <h2>Consultar Cobros</h2>
 
+<div class="mb-3">
+    <a href="@Url.Action("GestionarCobro", "Condominio")" class="btn btn-success">Crear Cobro</a>
+</div>
+
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -30,14 +34,12 @@
                 <td>@cobro.Estado</td>
                 <td>
                     @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
-                </td>
-                <td>
-                    @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
                     <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@cobro.Id_cobro" />
                         <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
                     </form>
                 </td>
+                
 
             </tr>
         }
