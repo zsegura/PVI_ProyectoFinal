@@ -19,16 +19,44 @@
     </div>
 </div>
 
+<h3 class="mt-5">Servicios Asociados</h3>
+<div class="mb-3">
+    @if (ViewBag.ServiciosAsociados != null && ((List<SelectListItem>)ViewBag.ServiciosAsociados).Any())
+    {
+        foreach (var servicio in (List<SelectListItem>)ViewBag.ServiciosAsociados)
+        {
+            <div class="form-check">
+                <input type="checkbox"
+                       id="service_@servicio.Value"
+                       name="ServiciosAsociados"
+                       value="@servicio.Value"
+                       checked="checked"
+                       disabled="disabled" />
+                <label class="form-check-label" for="service_@servicio.Value">
+                    @servicio.Text
+                </label>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No hay servicios asociados a este cobro.</p>
+    }
+</div>
+
+
+
 @if (Model.Estado == "Pendiente")
 {
-    <a href="@Url.Action("GestionarCobro", "Condominio", new { id = Model.Id_cobro })" class="btn btn-primary">Editar Cobro</a>
+    <a href="@Url.Action("GestionarCobro", "Condominio", new { id = Model.Id_cobro })" class="btn btn-primary">Editar</a>
+    <a href="@Url.Action("Pagar", "Condominio", new { id = Model.Id_cobro })" class="btn btn-success">Pagar</a>
     <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
         <input type="hidden" name="id" value="@Model.Id_cobro" />
         <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
     </form>
 }
 
-<a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn btn-secondary">Volver</a>
+<a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn">Regresar</a>
 
 <h3 class="mt-5">Historial de Bitácora</h3>
 

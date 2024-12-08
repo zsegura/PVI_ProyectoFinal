@@ -189,6 +189,7 @@ namespace PVI_ProyectoFinal.Controllers
         {
             SpConsultarCobrosResult cobroDetails;
             List<ModelBitacora> bitacoraList;
+            List<SelectListItem> serviciosAsociados;
 
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
@@ -209,6 +210,16 @@ namespace PVI_ProyectoFinal.Controllers
                         IdCobro = b.IdCobro
                     })
                     .ToList();
+
+                // Get associated services
+                serviciosAsociados = db.SpGetServiciosPorCobro(id)
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.Id_servicio.ToString(),
+                        Text = s.Nombre,
+                        Selected = true // All associated services are selected
+                    })
+                    .ToList();
             }
 
             if (cobroDetails == null)
@@ -218,8 +229,10 @@ namespace PVI_ProyectoFinal.Controllers
             }
 
             ViewBag.BitacoraList = bitacoraList;
+            ViewBag.ServiciosAsociados = serviciosAsociados;
             return View(cobroDetails);
         }
+
 
 
 
