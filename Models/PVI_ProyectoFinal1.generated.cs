@@ -500,7 +500,7 @@ namespace DataModels
 
 		#region SpConsultarCobros
 
-		public static IEnumerable<SpConsultarCobrosResult> SpConsultarCobros(this PviProyectoFinalDB dataConnection, string @ClienteNombre, int? @Mes, int? @Anno, bool? @IsEmployee)
+		public static IEnumerable<SpConsultarCobrosResult> SpConsultarCobros(this PviProyectoFinalDB dataConnection, string @ClienteNombre, int? @Mes, int? @Anno, bool? @IsEmployee, int? @IdPersona)
 		{
 			var parameters = new []
 			{
@@ -510,7 +510,8 @@ namespace DataModels
 				},
 				new DataParameter("@Mes",           @Mes,           LinqToDB.DataType.Int32),
 				new DataParameter("@Anno",          @Anno,          LinqToDB.DataType.Int32),
-				new DataParameter("@IsEmployee",    @IsEmployee,    LinqToDB.DataType.Boolean)
+				new DataParameter("@IsEmployee",    @IsEmployee,    LinqToDB.DataType.Boolean),
+				new DataParameter("@IdPersona",     @IdPersona,     LinqToDB.DataType.Int32)
 			};
 
 			return dataConnection.QueryProc<SpConsultarCobrosResult>("[dbo].[spConsultarCobros]", parameters);
@@ -887,6 +888,21 @@ namespace DataModels
 			[Column("contrasena")      ] public string    Contrasena       { get; set; }
 			[Column("estado")          ] public bool?     Estado           { get; set; }
 			[Column("tipo_persona")    ] public string    Tipo_persona     { get; set; }
+		}
+
+		#endregion
+
+		#region SpRetornaPersonasActivas
+
+		public static IEnumerable<SpRetornaPersonasActivasResult> SpRetornaPersonasActivas(this PviProyectoFinalDB dataConnection)
+		{
+			return dataConnection.QueryProc<SpRetornaPersonasActivasResult>("[dbo].[SpRetornaPersonasActivas]");
+		}
+
+		public partial class SpRetornaPersonasActivasResult
+		{
+			public int    IdPersona      { get; set; }
+			public string NombreCompleto { get; set; }
 		}
 
 		#endregion

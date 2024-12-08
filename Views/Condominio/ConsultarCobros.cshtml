@@ -5,42 +5,115 @@
     <div class="alert alert-info">@TempData["Resultado"]</div>
 }
 
-
 <h2>Consultar Cobros</h2>
+
+<!-- Filter Form -->
+<form method="get" action="@Url.Action("ConsultarCobros", "Condominio")" class="mb-3">
+    <div class="row">
+
+
+        @*Filter by client*@
+        <div class="col-md-4">
+            <label for="idPersona">Cliente</label>
+            <select name="idPersona" id="idPersona" class="form-control">
+                <option value="">-- Seleccionar --</option>
+                @foreach (var item in (List<SelectListItem>)ViewBag.PersonasActivas)
+                {
+                    <option value="@item.Value" @(item.Value == ViewBag.IdPersona?.ToString() ? "selected" : "")>
+                        @item.Text
+                    </option>
+                }
+            </select>
+        </div>
+
+        @*Filter by month*@
+        <div class="col-md-2">
+            <label for="mes">Mes de Cobro</label>
+            <select name="mes" id="mes" class="form-control">
+                <option value="">-- Seleccionar --</option>
+                @{
+                    var months = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i" @(ViewBag.Mes == i ? "selected" : "")>
+                            @months[i - 1]
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+
+        @*Filter by year*@
+        <div class="col-md-2">
+            <label for="anno">Año de Cobro</label>
+            <select name="anno" id="anno" class="form-control">
+                <option value="">-- Seleccionar --</option>
+                @{
+                    for (int year = 2024; year <= 2034; year++)
+                    {
+                        <option value="@year" @(ViewBag.Anno == year ? "selected" : "")>
+                            @year
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+
+
+
+        @*Buttons*@
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+            <a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn btn-secondary">Limpiar</a>
+        </div>
+
+
+    </div>
+</form>
+
 
 <div class="mb-3">
     <a href="@Url.Action("GestionarCobro", "Condominio")" class="btn btn-success">Crear Cobro</a>
 </div>
 
-<table class="table table-bordered table-hover">
-    <thead>
+<table class="table table-bordered table-hover table-striped">
+    <thead class="text-center">
         <tr>
-            <th>#Cobro</th>
-            <th>#Casa</th>
-            <th>Propietario</th>
-            <th>Periodo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th style="font-weight: bold;"># Cobro</th>
+            <th style="font-weight: bold;">Casa</th>
+            <th style="font-weight: bold; text-align: left;">Cliente</th>
+            <th style="font-weight: bold;">Periodo</th>
+            <th style="font-weight: bold;">Estado</th>
+            <th style="font-weight: bold;">Acciones</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var cobro in Model)
+        @if (Model.Any())
+        {
+            foreach (var cobro in Model)
+            {
+                <tr>
+                    <td class="text-center">@cobro.Id_cobro</td>
+                    <td class="text-center">@cobro.Nombre_casa</td>
+                    <td class="text-left">@cobro.Cliente</td>
+                    <td class="text-center">@($"{cobro.Mes:D2}-{cobro.Anno}")</td>
+                    <td class="text-center">@cobro.Estado</td>
+                    <td>
+                        @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
+                        <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@cobro.Id_cobro" />
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@cobro.Id_cobro</td>
-                <td>@cobro.Nombre_casa</td>
-                <td>@cobro.Cliente</td>
-                <td>@($"{cobro.Mes:D2}/{cobro.Anno}")</td>
-                <td>@cobro.Estado</td>
-                <td>
-                    @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
-                    <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@cobro.Id_cobro" />
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
-                    </form>
-                </td>
-                
-
+                <td colspan="6" class="text-center">No se encontraron registros.</td>
             </tr>
         }
     </tbody>
