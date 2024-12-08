@@ -10,6 +10,9 @@
 <!-- Filter Form -->
 <form method="get" action="@Url.Action("ConsultarCobros", "Condominio")" class="mb-3">
     <div class="row">
+
+
+        @*Filter by client*@
         <div class="col-md-4">
             <label for="idPersona">Cliente</label>
             <select name="idPersona" id="idPersona" class="form-control">
@@ -23,25 +26,50 @@
             </select>
         </div>
 
+        @*Filter by month*@
         <div class="col-md-2">
             <label for="mes">Mes de Cobro</label>
             <select name="mes" id="mes" class="form-control">
                 <option value="">-- Seleccionar --</option>
-                @for (int i = 1; i <= 12; i++)
-                {
-                    <option value="@i" @(ViewBag.Mes == i ? "selected" : "")>@i</option>
+                @{
+                    var months = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i" @(ViewBag.Mes == i ? "selected" : "")>
+                            @months[i - 1]
+                        </option>
+                    }
                 }
             </select>
         </div>
+
+
+        @*Filter by year*@
         <div class="col-md-2">
             <label for="anno">Año de Cobro</label>
-            <input type="number" name="anno" id="anno" class="form-control"
-                   value="@ViewBag.Anno" placeholder="Año" min="2000" max="2100" />
+            <select name="anno" id="anno" class="form-control">
+                <option value="">-- Seleccionar --</option>
+                @{
+                    for (int year = 2024; year <= 2034; year++)
+                    {
+                        <option value="@year" @(ViewBag.Anno == year ? "selected" : "")>
+                            @year
+                        </option>
+                    }
+                }
+            </select>
         </div>
+
+
+
+
+        @*Buttons*@
         <div class="col-md-4 d-flex align-items-end">
             <button type="submit" class="btn btn-primary me-2">Filtrar</button>
             <a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn btn-secondary">Limpiar</a>
         </div>
+
+
     </div>
 </form>
 
