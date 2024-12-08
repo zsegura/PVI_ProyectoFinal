@@ -19,22 +19,19 @@ namespace PVI_ProyectoFinal.Controllers
             var list = new List<SpConsultarCobrosResult>();
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                // Fetch filtered cobros
-                list = db.SpConsultarCobros(clienteNombre, mes, anno, null, idPersona)
-                         .OrderByDescending(c => c.Id_cobro) // Order by ID descending
+                list = db.SpConsultarCobros(clienteNombre, mes, anno, idPersona)
+                         .OrderByDescending(c => c.Id_cobro)
                          .ToList();
 
-                // Populate the dropdown for active persons
                 ViewBag.PersonasActivas = db.SpRetornaPersonasActivas()
                                             .Select(p => new SelectListItem
                                             {
-                                                Value = p.IdPersona.ToString(), // Pass the ID as the value
+                                                Value = p.IdPersona.ToString(),
                                                 Text = p.NombreCompleto
                                             })
                                             .ToList();
             }
 
-            // Pass filters to ViewBag for prepopulation in the view
             ViewBag.ClienteNombre = clienteNombre;
             ViewBag.Mes = mes;
             ViewBag.Anno = anno;
@@ -50,92 +47,86 @@ namespace PVI_ProyectoFinal.Controllers
         {
             var cobro = new ModelCobro
             {
-                ServiciosSeleccionados = new List<int>() // Initialize as an empty list
+                ServiciosSeleccionados = new List<int>()
             };
 
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                if (id != null && id > 0)
+                if (id.HasValue && id > 0)
                 {
-                    var cobroResult = db.SpConsultarCobros(null, null, null, true, null) // Provide null for idPersona
-                    .Where(c => c.Id_cobro == id)
-                    .ToList();
-                    // Ensure the reader is closed
+                    var cobroResult = db.SpConsultarCobros(null, null, null, null)
+                                        .FirstOrDefault(c => c.Id_cobro == id);
 
-                    cobro = cobroResult.Select(c => new ModelCobro
+                    if (cobroResult != null)
                     {
-                        Id = c.Id_cobro,
-                        Mes = c.Mes ?? 1,
-                        Anno = c.Anno ?? 2024,
-                        Estado = c.Estado,
-                        Cliente = c.Cliente,
-                        Casa = c.Nombre_casa,
-                        ServiciosSeleccionados = db.SpGetServiciosPorCobro(c.Id_cobro)
-                            .Select(s => s.Id_servicio)
-                            .ToList()
-                    }).FirstOrDefault();
-
-                    // If no servicios are returned, initialize the list
-                    if (cobro.ServiciosSeleccionados == null)
-                    {
-                        cobro.ServiciosSeleccionados = new List<int>();
+                        cobro = new ModelCobro
+                        {
+                            Id = cobroResult.Id_cobro,
+                            Mes = cobroResult.Mes ?? 1,
+                            Anno = cobroResult.Anno ?? DateTime.Now.Year,
+                            Estado = cobroResult.Estado,
+                            Cliente = cobroResult.Cliente,
+                            IdCliente = cobroResult.Id_cliente,
+                            Casa = cobroResult.Nombre_casa,
+                            ServiciosSeleccionados = db.SpGetServiciosPorCobro(cobroResult.Id_cobro)
+                                                        .Select(s => s.Id_servicio)
+                                                        .ToList()
+                        };
                     }
                 }
 
-                // Populate dropdown for Clients
-                ViewBag.Clientes = new List<SelectListItem>
-        {
-            new SelectListItem { Value = "", Text = "Seleccione un cliente" }
-        }
-                .Concat(db.SpRetornaPersonasActivas()
-                    .OrderBy(p => p.NombreCompleto)
-                    .Select(p => new SelectListItem
-                    {
-                        Value = p.IdPersona.ToString(),
-                        Text = p.NombreCompleto
-                    }))
-                    .ToList();
+                ViewBag.Clientes = db.SpRetornaPersonasActivas()
+                                    .OrderBy(p => p.NombreCompleto)
+                                    .Select(p => new SelectListItem
+                                    {
+                                        Value = p.IdPersona.ToString(),
+                                        Text = p.NombreCompleto,
+                                        Selected = p.IdPersona == cobro.IdCliente
+                                    })
+                                    .ToList();
 
-                // Populate dropdown for Casas
                 ViewBag.Casas = db.SpRetornaCasasActivas()
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.Id_casa.ToString(),
-                        Text = c.Nombre_casa
-                    })
-                    .ToList();
+                                .Select(c => new SelectListItem
+                                {
+                                    Value = c.Id_casa.ToString(),
+                                    Text = c.Nombre_casa,
+                                    Selected = c.Nombre_casa == cobro.Casa
+                                })
+                                .ToList();
 
-                // Populate dropdown for Years (2024 to 2034)
-                ViewBag.AnnoOptions = Enumerable.Range(2024, 2034 - 2024 + 1)
-                    .Select(y => new SelectListItem
-                    {
-                        Value = y.ToString(),
-                        Text = y.ToString()
-                    })
-                    .ToList();
+                ViewBag.AnnoOptions = Enumerable.Range(DateTime.Now.Year, 10)
+                                                .Select(y => new SelectListItem
+                                                {
+                                                    Value = y.ToString(),
+                                                    Text = y.ToString(),
+                                                    Selected = y == cobro.Anno
+                                                })
+                                                .ToList();
 
-                // Populate dropdown for Months
                 ViewBag.MesOptions = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
-                    .Where(m => !string.IsNullOrEmpty(m)) // Filter out any empty strings
-                    .Select((name, index) => new SelectListItem
-                    {
-                        Value = (index + 1).ToString(), // Month value (1-based index)
-                        Text = name // Month name
-                    })
-                    .ToList();
+                                    .Where(m => !string.IsNullOrEmpty(m))
+                                    .Select((name, index) => new SelectListItem
+                                    {
+                                        Value = (index + 1).ToString(),
+                                        Text = name,
+                                        Selected = (index + 1) == cobro.Mes
+                                    })
+                                    .ToList();
 
-                // Populate checkboxes for Servicios
                 ViewBag.Servicios = db.Servicios
-            .Where(s => s.Estado == true) // Only active services
-            .Select(s => new SelectListItem
-            {
-                Value = s.IdServicio.ToString(),
-                Text = s.Nombre
-            })
-            .ToList();
+                                     .Where(s => s.Estado == true)
+                                     .Select(s => new SelectListItem
+                                     {
+                                         Value = s.IdServicio.ToString(),
+                                         Text = s.Nombre
+                                     })
+                                     .ToList();
             }
+
+            ViewBag.IsEdit = id.HasValue && id > 0;
             return View(cobro);
         }
+
 
 
 
@@ -149,29 +140,32 @@ namespace PVI_ProyectoFinal.Controllers
             {
                 using (var db = new PviProyectoFinalDB("MyDatabase"))
                 {
+                    string serviciosString = cobro.ServiciosSeleccionados != null
+                        ? string.Join(",", cobro.ServiciosSeleccionados.Distinct())
+                        : string.Empty;
+
                     if (cobro.Id == 0)
                     {
-                        // Insert new Cobro
                         db.SpCrearCobro(
                             cobro.IdCasa,
                             cobro.Mes,
                             cobro.Anno,
                             cobro.Monto,
-                            string.Join(",", cobro.ServiciosSeleccionados ?? new List<int>()),
-                            1 // Assuming authenticated user ID
+                            serviciosString,
+                            cobro.IdCliente ?? 0
                         );
                     }
                     else
                     {
-                        // Update existing Cobro
                         db.SpActualizarCobro(
                             cobro.Id,
                             cobro.Monto,
-                            string.Join(",", cobro.ServiciosSeleccionados ?? new List<int>()),
-                            1 // Assuming authenticated user ID
+                            serviciosString,
+                            cobro.IdCliente ?? 0
                         );
                     }
-                    resultado = "Cobro actualizado exitosamente.";
+
+                    resultado = "Cobro guardado exitosamente.";
                 }
             }
             catch (Exception ex)
@@ -179,9 +173,15 @@ namespace PVI_ProyectoFinal.Controllers
                 resultado = $"Error al guardar el cobro: {ex.Message}";
             }
 
-            ViewBag.Resultado = resultado;
+            TempData["Resultado"] = resultado;
             return RedirectToAction("ConsultarCobros");
         }
+
+
+
+
+
+
 
 
         //New action to handle the DetalleCobro view
@@ -193,33 +193,30 @@ namespace PVI_ProyectoFinal.Controllers
 
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                // Get Cobro details
-                cobroDetails = db.SpConsultarCobros(null, null, null, null, null)
-                    .FirstOrDefault(c => c.Id_cobro == id);
+                cobroDetails = db.SpConsultarCobros(null, null, null, null)
+                                .FirstOrDefault(c => c.Id_cobro == id);
 
-                // Get associated Bitacora records
                 bitacoraList = db.Bitacoras
-                    .Where(b => b.IdCobro == id)
-                    .OrderByDescending(b => b.IdBitacora)
-                    .Select(b => new ModelBitacora
-                    {
-                        IdBitacora = b.IdBitacora,
-                        Detalle = b.Detalle,
-                        IdUser = b.IdUser,
-                        Fecha = b.Fecha,
-                        IdCobro = b.IdCobro
-                    })
-                    .ToList();
+                                .Where(b => b.IdCobro == id)
+                                .OrderByDescending(b => b.IdBitacora)
+                                .Select(b => new ModelBitacora
+                                {
+                                    IdBitacora = b.IdBitacora,
+                                    Detalle = b.Detalle,
+                                    IdUser = b.IdUser,
+                                    Fecha = b.Fecha,
+                                    IdCobro = b.IdCobro
+                                })
+                                .ToList();
 
-                // Get associated services
                 serviciosAsociados = db.SpGetServiciosPorCobro(id)
-                    .Select(s => new SelectListItem
-                    {
-                        Value = s.Id_servicio.ToString(),
-                        Text = s.Nombre,
-                        Selected = true // All associated services are selected
-                    })
-                    .ToList();
+                                      .Select(s => new SelectListItem
+                                      {
+                                          Value = s.Id_servicio.ToString(),
+                                          Text = s.Nombre,
+                                          Selected = true
+                                      })
+                                      .ToList();
             }
 
             if (cobroDetails == null)
@@ -232,6 +229,7 @@ namespace PVI_ProyectoFinal.Controllers
             ViewBag.ServiciosAsociados = serviciosAsociados;
             return View(cobroDetails);
         }
+
 
 
 
