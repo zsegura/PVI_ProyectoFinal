@@ -12,8 +12,15 @@
     <div class="row">
         <div class="col-md-4">
             <label for="clienteNombre">Nombre del Cliente</label>
-            <input type="text" name="clienteNombre" id="clienteNombre" class="form-control"
-                   value="@ViewBag.ClienteNombre" placeholder="Nombre del Cliente" />
+            <select name="clienteNombre" id="clienteNombre" class="form-control">
+                <option value="">-- Seleccionar --</option>
+                @foreach (var item in (List<SelectListItem>)ViewBag.PersonasActivas)
+                {
+                    <option value="@item.Value" @(item.Value == ViewBag.ClienteNombre ? "selected" : "")>
+                        @item.Text
+                    </option>
+                }
+            </select>
         </div>
         <div class="col-md-2">
             <label for="mes">Mes de Cobro</label>
@@ -36,6 +43,7 @@
         </div>
     </div>
 </form>
+
 
 <div class="mb-3">
     <a href="@Url.Action("GestionarCobro", "Condominio")" class="btn btn-success">Crear Cobro</a>

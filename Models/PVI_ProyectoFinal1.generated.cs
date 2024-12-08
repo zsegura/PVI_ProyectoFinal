@@ -891,6 +891,21 @@ namespace DataModels
 
 		#endregion
 
+		#region SpRetornaPersonasActivas
+
+		public static IEnumerable<SpRetornaPersonasActivasResult> SpRetornaPersonasActivas(this PviProyectoFinalDB dataConnection)
+		{
+			return dataConnection.QueryProc<SpRetornaPersonasActivasResult>("[dbo].[SpRetornaPersonasActivas]");
+		}
+
+		public partial class SpRetornaPersonasActivasResult
+		{
+			public int    IdPersona      { get; set; }
+			public string NombreCompleto { get; set; }
+		}
+
+		#endregion
+
 		#region SpUpgraddiagrams
 
 		public static int SpUpgraddiagrams(this PviProyectoFinalDB dataConnection)

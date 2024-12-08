@@ -22,6 +22,15 @@ namespace PVI_ProyectoFinal.Controllers
                 list = db.SpConsultarCobros(clienteNombre, mes, anno, null)
                          .OrderByDescending(c => c.Id_cobro) // Order by ID descending
                          .ToList();
+
+                // Populate the dropdown for active persons
+                ViewBag.PersonasActivas = db.SpRetornaPersonasActivas()
+                                            .Select(p => new SelectListItem
+                                            {
+                                                Value = p.NombreCompleto, // Pass the full name as the value
+                                                Text = p.NombreCompleto
+                                            })
+                                            .ToList();
             }
 
             // Pass filters to ViewBag for prepopulation in the view
@@ -31,6 +40,7 @@ namespace PVI_ProyectoFinal.Controllers
 
             return View(list);
         }
+
 
 
         public ActionResult GestionarCobro(int? id)
