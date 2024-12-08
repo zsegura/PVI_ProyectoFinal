@@ -171,88 +171,94 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        ////// GET: Crear Casa
-        ////public ActionResult CrearCasa(int? id)
-        ////{
-        ////    var casa = new ModelCasa();
-
-        ////    using (var db = new PviProyectoFinalDB("MyDatabase"))
-        ////    {
-
-        ////        casa = db.SpListarCasas().Select(e => new ModelCasa
-
-
-        ////        {
-        ////            IdCasa = casa.IdCasa,
-        ////            NombreCasa = casa.NombreCasa,
-        ////            MetrosCuadrados = casa.MetrosCuadrados,
-        ////            NumeroHabitaciones = casa.NumeroHabitaciones,
-        ////            NumeroBanos = casa.NumeroBanos,
-        ////            NombrePersona = casa.NombrePersona,
-        ////            FechaConstruccion = casa.FechaConstruccion,
-        ////            Estado = casa.Estado,
-
-        ////        }).FirstOrDefault();
-        ////    }
-        ////    return View(casa);
-        ////}
 
 
 
 
-        //////obtebnemos los datos menu DropDown
-       
-        ////public JsonResult ObtenerPersona()
-        ////{
-        ////    var persona = new List<DropDown>();
-        ////    using (var db = new PviProyectoFinalDB("MyDatabase"))
-      
-        ////    {
-        ////        persona = db.SpRetornaPersona().Select(p => new /*DropDown*/
-        ////        {
-        ////            Id = p.Id_Persona,
-        ////            Nombre = p.Nombre_Persona,  
-        ////        }).ToList();
-        ////    }
-        ////    return Json(persona, JsonRequestBehavior.AllowGet);
-        ////}
+        // GET: Crear Casa
+        public ActionResult CrearCasa(int? id)
+        {
+            var casa = new ModelCasa();
+
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
+
+                casa = db.SpListarCasas().Select(e => new ModelCasa
+
+
+                {
+                    IdCasa = casa.IdCasa,
+                    NombreCasa = casa.NombreCasa,
+                    MetrosCuadrados = casa.MetrosCuadrados,
+                    NumeroHabitaciones = casa.NumeroHabitaciones,
+                    NumeroBanos = casa.NumeroBanos,
+                    NombrePersona = casa.NombrePersona,
+                    FechaConstruccion = casa.FechaConstruccion,
+                    Estado = casa.Estado,
+
+                }).FirstOrDefault();
+
+
+
+                // Populate dropdown for Persona
+                ViewBag.persona = db.SpRetornaPersona()
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id_persona.ToString(),
+                        Text = p.Nombre_persona
+                    })
+                    .ToList();
+
+
+            }
+            return View(casa);
+        }
 
 
 
 
-        ////[HttpPost]
-        ////public JsonResult CrearCasa(ModelCasa casa)
-        ////{
-        ////    string resultado;
-        ////    try
-        ////    {
-        ////        using (var db = new PviProyectoFinalDB("MyDatabase"))
-        ////        {
-        ////            db.Spcrea(
-        ////                casa.NombreCasa,
-        ////                casa.MetrosCuadrados,
-        ////                casa.NumeroHabitaciones,
-        ////                casa.NumeroBanos,
-        ////                casa.NombrePersona,
-        ////                casa.FechaConstruccion,
-        ////                casa.Estado
-
-        ////            );
-        ////            resultado = "La casa ha sido registrada exitosamente.";
-        ////        }
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        resultado = $"Error al registrar la casa: {ex.Message}";
-        ////    }
-        ////    return Json(resultado);
-        ////}
 
 
-        //////New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
+  
 
 
-        [HttpPost]
+
+
+       [HttpPost]
+        public JsonResult CrearCasa(ModelCasa casa)
+        {
+            string resultado;
+            try
+            {
+                using (var db = new PviProyectoFinalDB("MyDatabase"))
+                {
+                    db.SpCrearCasa(
+                        casa.NombreCasa,
+                        casa.MetrosCuadrados,
+                        casa.NumeroHabitaciones,
+                        casa.NumeroBanos,
+                        casa.NombrePersona,
+                        casa.FechaConstruccion,
+                        casa.Estado
+
+                    );
+                    resultado = "La casa ha sido registrada exitosamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = $"Error al registrar la casa: {ex.Message}";
+            }
+            return Json(resultado);
+        }
+
+    
+
+
+    //////New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
+
+
+    [HttpPost]
         public ActionResult EliminarCobro(int id)
         {
             string resultado;
