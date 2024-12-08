@@ -6,31 +6,54 @@
     @Html.HiddenFor(model => model.Id)
 
     <div class="mb-3">
+        <label class="form-label" for="IdCliente">Cliente:</label>
+        <select id="IdCliente" name="IdCliente" class="form-control">
+            @foreach (var cliente in (List<SelectListItem>)ViewBag.Clientes)
+            {
+                <option value="@cliente.Value" @(cliente.Value == Model.IdCliente?.ToString() ? "selected" : "")>
+                    @cliente.Text
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
         <label class="form-label" for="IdCasa">Casa:</label>
         <select id="IdCasa" name="IdCasa" class="form-control">
             <option value="">Seleccione una casa</option>
             @foreach (var casa in (List<SelectListItem>)ViewBag.Casas)
             {
-                <option value="@casa.Value" @(casa.Value == Model.IdCasa.ToString() ? "selected" : "")>@casa.Text</option>
+                <option value="@casa.Value" @(casa.Value == Model.IdCasa.ToString() ? "selected" : "")>
+                    @casa.Text
+                </option>
             }
         </select>
     </div>
 
-
+    <div class="mb-3">
+        <label class="form-label" for="Anno">Año:</label>
+        <select id="Anno" name="Anno" class="form-control">
+            <option value="">Seleccione un año</option>
+            @foreach (var year in (List<SelectListItem>)ViewBag.AnnoOptions)
+            {
+                <option value="@year.Value" @(year.Value == Model.Anno.ToString() ? "selected" : "")>
+                    @year.Text
+                </option>
+            }
+        </select>
+    </div>
 
     <div class="mb-3">
         <label class="form-label" for="Mes">Mes:</label>
-        @Html.TextBoxFor(model => model.Mes, new { type = "number", min = "1", max = "12", @class = "form-control" })
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label" for="Anno">Año:</label>
-        @Html.TextBoxFor(model => model.Anno, new { type = "number", min = "2024", max = "2034", @class = "form-control" })
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label" for="Monto">Monto:</label>
-        @Html.TextBoxFor(model => model.Monto, new { type = "number", step = "0.01", @class = "form-control" })
+        <select id="Mes" name="Mes" class="form-control">
+            <option value="">Seleccione un mes</option>
+            @foreach (var month in (List<SelectListItem>)ViewBag.MesOptions)
+            {
+                <option value="@month.Value" @(month.Value == Model.Mes.ToString() ? "selected" : "")>
+                    @month.Text
+                </option>
+            }
+        </select>
     </div>
 
     <div class="mb-3">
@@ -44,10 +67,20 @@
                        value="@servicio.Value"
                        @(Model?.ServiciosSeleccionados != null && Model.ServiciosSeleccionados.Contains(int.Parse(servicio.Value)) ? "checked" : "") />
                 <label class="form-check-label" for="service_@servicio.Value">@servicio.Text</label>
-
             </div>
         }
+        <div id="service-error" class="text-danger" style="display:none;">Seleccione al menos un servicio.</div>
     </div>
 
     <input type="submit" class="btn btn-primary" value="Guardar Cobro" />
 </form>
+
+<script>
+    document.getElementById('cobroForm').addEventListener('submit', function (e) {
+        var checkboxes = document.querySelectorAll('input[name="ServiciosSeleccionados"]:checked');
+        if (checkboxes.length === 0) {
+            e.preventDefault();
+            document.getElementById('service-error').style.display = 'block';
+        }
+    });
+</script>

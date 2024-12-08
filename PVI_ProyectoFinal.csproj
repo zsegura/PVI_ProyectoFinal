@@ -354,6 +354,7 @@
     <Content Include="Views\Condominio\GestionarCasas.cshtml" />
     <Content Include="Views\Condominio\GestionarServicios.cshtml" />
     <Content Include="Views\Condominio\ConsultarCasas.cshtml" />
+    <Content Include="Views\Condominio\DetalleCobro.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

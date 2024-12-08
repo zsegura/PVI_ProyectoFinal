@@ -1,4 +1,5 @@
-﻿using DataModels;
+﻿using Antlr.Runtime.Misc;
+using DataModels;
 using PVI_ProyectoFinal.Models;
 using System;
 using System.Collections;
@@ -64,7 +65,6 @@ namespace PVI_ProyectoFinal.Controllers
                     cobro = cobroResult.Select(c => new ModelCobro
                     {
                         Id = c.Id_cobro,
-                        Monto = c.Monto ?? 0,
                         Mes = c.Mes ?? 1,
                         Anno = c.Anno ?? 2024,
                         Estado = c.Estado,
@@ -82,6 +82,20 @@ namespace PVI_ProyectoFinal.Controllers
                     }
                 }
 
+                // Populate dropdown for Clients
+                ViewBag.Clientes = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "", Text = "Seleccione un cliente" }
+        }
+                .Concat(db.SpRetornaPersonasActivas()
+                    .OrderBy(p => p.NombreCompleto)
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.IdPersona.ToString(),
+                        Text = p.NombreCompleto
+                    }))
+                    .ToList();
+
                 // Populate dropdown for Casas
                 ViewBag.Casas = db.SpRetornaCasasActivas()
                     .Select(c => new SelectListItem
@@ -91,14 +105,34 @@ namespace PVI_ProyectoFinal.Controllers
                     })
                     .ToList();
 
-                // Populate dropdown for Servicios
-                ViewBag.Servicios = db.Servicios.Where(s => s.Estado == true)
-                    .Select(s => new SelectListItem
+                // Populate dropdown for Years (2024 to 2034)
+                ViewBag.AnnoOptions = Enumerable.Range(2024, 2034 - 2024 + 1)
+                    .Select(y => new SelectListItem
                     {
-                        Value = s.IdServicio.ToString(),
-                        Text = s.Nombre
+                        Value = y.ToString(),
+                        Text = y.ToString()
                     })
                     .ToList();
+
+                // Populate dropdown for Months
+                ViewBag.MesOptions = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
+                    .Where(m => !string.IsNullOrEmpty(m)) // Filter out any empty strings
+                    .Select((name, index) => new SelectListItem
+                    {
+                        Value = (index + 1).ToString(), // Month value (1-based index)
+                        Text = name // Month name
+                    })
+                    .ToList();
+
+                // Populate checkboxes for Servicios
+                ViewBag.Servicios = db.Servicios
+            .Where(s => s.Estado == true) // Only active services
+            .Select(s => new SelectListItem
+            {
+                Value = s.IdServicio.ToString(),
+                Text = s.Nombre
+            })
+            .ToList();
             }
             return View(cobro);
         }
@@ -150,6 +184,46 @@ namespace PVI_ProyectoFinal.Controllers
         }
 
 
+        //New action to handle the DetalleCobro view
+        public ActionResult DetalleCobro(int id)
+        {
+            SpConsultarCobrosResult cobroDetails;
+            List<ModelBitacora> bitacoraList;
+
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
+                // Get Cobro details
+                cobroDetails = db.SpConsultarCobros(null, null, null, null, null)
+                    .FirstOrDefault(c => c.Id_cobro == id);
+
+                // Get associated Bitacora records
+                bitacoraList = db.Bitacoras
+                    .Where(b => b.IdCobro == id)
+                    .OrderByDescending(b => b.IdBitacora)
+                    .Select(b => new ModelBitacora
+                    {
+                        IdBitacora = b.IdBitacora,
+                        Detalle = b.Detalle,
+                        IdUser = b.IdUser,
+                        Fecha = b.Fecha,
+                        IdCobro = b.IdCobro
+                    })
+                    .ToList();
+            }
+
+            if (cobroDetails == null)
+            {
+                TempData["Resultado"] = "No se encontró el cobro especificado.";
+                return RedirectToAction("ConsultarCobros");
+            }
+
+            ViewBag.BitacoraList = bitacoraList;
+            return View(cobroDetails);
+        }
+
+
+
+
 
         // New AJAX method: GetCasas
         public JsonResult GetCasas()
@@ -199,89 +273,89 @@ namespace PVI_ProyectoFinal.Controllers
 
 
         // GET: Crear Casa
-        public ActionResult CrearCasa(int? id)
-        {
-            var casa = new ModelCasa();
+        //public ActionResult CrearCasa(int? id)
+        //{
+        //    var casa = new ModelCasa();
 
-            using (var db = new PviProyectoFinalDB("MyDatabase"))
-            {
+        //    using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //    {
 
-                casa = db.SpListarCasas().Select(e => new ModelCasa
-
-
-                {
-                    IdCasa = casa.IdCasa,
-                    NombreCasa = casa.NombreCasa,
-                    MetrosCuadrados = casa.MetrosCuadrados,
-                    NumeroHabitaciones = casa.NumeroHabitaciones,
-                    NumeroBanos = casa.NumeroBanos,
-                    NombrePersona = casa.NombrePersona,
-                    FechaConstruccion = casa.FechaConstruccion,
-                    Estado = casa.Estado,
-
-                }).FirstOrDefault();
+        //        casa = db.SpListarCasas().Select(e => new ModelCasa
 
 
+        //        {
+        //            IdCasa = casa.IdCasa,
+        //            NombreCasa = casa.NombreCasa,
+        //            MetrosCuadrados = casa.MetrosCuadrados,
+        //            NumeroHabitaciones = casa.NumeroHabitaciones,
+        //            NumeroBanos = casa.NumeroBanos,
+        //            NombrePersona = casa.NombrePersona,
+        //            FechaConstruccion = casa.FechaConstruccion,
+        //            Estado = casa.Estado,
 
-                // Populate dropdown for Persona
-                ViewBag.persona = db.SpRetornaPersona()
-                    .Select(p => new SelectListItem
-                    {
-                        Value = p.Id_persona.ToString(),
-                        Text = p.Nombre_persona
-                    })
-                    .ToList();
-
-
-            }
-            return View(casa);
-        }
+        //        }).FirstOrDefault();
 
 
+
+        //        // Populate dropdown for Persona
+        //        ViewBag.persona = db.SpRetornaPersona()
+        //            .Select(p => new SelectListItem
+        //            {
+        //                Value = p.Id_persona.ToString(),
+        //                Text = p.Nombre_persona
+        //            })
+        //            .ToList();
+
+
+        //    }
+        //    return View(casa);
+        //}
 
 
 
 
-  
 
 
 
 
-       [HttpPost]
-        public JsonResult CrearCasa(ModelCasa casa)
-        {
-            string resultado;
-            try
-            {
-                using (var db = new PviProyectoFinalDB("MyDatabase"))
-                {
-                    db.SpCrearCasa(
-                        casa.NombreCasa,
-                        casa.MetrosCuadrados,
-                        casa.NumeroHabitaciones,
-                        casa.NumeroBanos,
-                        casa.NombrePersona,
-                        casa.FechaConstruccion,
-                        casa.Estado
-
-                    );
-                    resultado = "La casa ha sido registrada exitosamente.";
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = $"Error al registrar la casa: {ex.Message}";
-            }
-            return Json(resultado);
-        }
-
-    
 
 
-    //////New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
+
+        //[HttpPost]
+        //public JsonResult CrearCasa(ModelCasa casa)
+        //{
+        //    string resultado;
+        //    try
+        //    {
+        //        using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //        {
+        //            db.SpCrearCasa(
+        //                casa.NombreCasa,
+        //                casa.MetrosCuadrados,
+        //                casa.NumeroHabitaciones,
+        //                casa.NumeroBanos,
+        //                casa.NombrePersona,
+        //                casa.FechaConstruccion,
+        //                casa.Estado
+
+        //            );
+        //            resultado = "La casa ha sido registrada exitosamente.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultado = $"Error al registrar la casa: {ex.Message}";
+        //    }
+        //    return Json(resultado);
+        //}
 
 
-    [HttpPost]
+
+
+        //////New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
+
+
+        [HttpPost]
         public ActionResult EliminarCobro(int id)
         {
             string resultado;

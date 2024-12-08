@@ -15,6 +15,7 @@ namespace PVI_ProyectoFinal.Models
         public string Cliente { get; set; }
         public string Casa { get; set; } // Holds Nombre_casa
         public int IdCasa { get; set; } // Add this property
+        public int? IdCliente { get; set; } // To hold the selected client's ID
         public List<int> ServiciosSeleccionados { get; set; }
     }
 

@@ -1,0 +1,65 @@
+﻿@model DataModels.PviProyectoFinalDBStoredProcedures.SpConsultarCobrosResult
+@{
+    var bitacoraList = ViewBag.BitacoraList as List<PVI_ProyectoFinal.Models.ModelBitacora>;
+}
+
+<h2>Detalle del Cobro</h2>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Cobro ID: @Model.Id_cobro</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Cliente:</strong> @Model.Cliente</p>
+        <p><strong>Casa:</strong> @Model.Nombre_casa</p>
+        <p><strong>Mes:</strong> @Model.Mes</p>
+        <p><strong>Año:</strong> @Model.Anno</p>
+        <p><strong>Monto:</strong> @Model.Monto</p>
+        <p><strong>Estado:</strong> @Model.Estado</p>
+    </div>
+</div>
+
+@if (Model.Estado == "Pendiente")
+{
+    <a href="@Url.Action("GestionarCobro", "Condominio", new { id = Model.Id_cobro })" class="btn btn-primary">Editar Cobro</a>
+    <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
+        <input type="hidden" name="id" value="@Model.Id_cobro" />
+        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
+    </form>
+}
+
+<a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn btn-secondary">Volver</a>
+
+<h3 class="mt-5">Historial de Bitácora</h3>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Fecha y Hora</th>
+            <th>Acción</th>
+            <th>Descripción</th>
+            <th>Usuario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (bitacoraList != null && bitacoraList.Any())
+        {
+            int rowIndex = 0;
+            foreach (var bitacora in bitacoraList)
+            {
+                <tr class="@(rowIndex++ % 2 == 0 ? "table-light" : "table-secondary")">
+                    <td>@bitacora.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@bitacora.Detalle</td>
+                    <td>@bitacora.Detalle</td>
+                    <td>@bitacora.IdUser</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No se encontraron registros en la bitácora.</td>
+            </tr>
+        }
+    </tbody>
+</table>

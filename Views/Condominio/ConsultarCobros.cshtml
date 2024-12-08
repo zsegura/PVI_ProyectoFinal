@@ -101,12 +101,13 @@
                     <td class="text-center">@($"{cobro.Mes:D2}-{cobro.Anno}")</td>
                     <td class="text-center">@cobro.Estado</td>
                     <td>
-                        @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Ver Detalle", "DetalleCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
                         <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@cobro.Id_cobro" />
                             <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
                         </form>
                     </td>
+
                 </tr>
             }
         }
