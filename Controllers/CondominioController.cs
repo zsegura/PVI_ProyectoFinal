@@ -13,13 +13,13 @@ namespace PVI_ProyectoFinal.Controllers
     public class CondominioController : Controller
     {
         // GET: ConsultarCobros
-        public ActionResult ConsultarCobros(string clienteNombre, int? mes, int? anno)
+        public ActionResult ConsultarCobros(string clienteNombre, int? mes, int? anno, int? idPersona)
         {
             var list = new List<SpConsultarCobrosResult>();
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
                 // Fetch filtered cobros
-                list = db.SpConsultarCobros(clienteNombre, mes, anno, null)
+                list = db.SpConsultarCobros(clienteNombre, mes, anno, null, idPersona)
                          .OrderByDescending(c => c.Id_cobro) // Order by ID descending
                          .ToList();
 
@@ -27,7 +27,7 @@ namespace PVI_ProyectoFinal.Controllers
                 ViewBag.PersonasActivas = db.SpRetornaPersonasActivas()
                                             .Select(p => new SelectListItem
                                             {
-                                                Value = p.NombreCompleto, // Pass the full name as the value
+                                                Value = p.IdPersona.ToString(), // Pass the ID as the value
                                                 Text = p.NombreCompleto
                                             })
                                             .ToList();
@@ -37,9 +37,11 @@ namespace PVI_ProyectoFinal.Controllers
             ViewBag.ClienteNombre = clienteNombre;
             ViewBag.Mes = mes;
             ViewBag.Anno = anno;
+            ViewBag.IdPersona = idPersona;
 
             return View(list);
         }
+
 
 
 
@@ -54,9 +56,10 @@ namespace PVI_ProyectoFinal.Controllers
             {
                 if (id != null && id > 0)
                 {
-                    var cobroResult = db.SpConsultarCobros(null, null, null, true)
-                        .Where(c => c.Id_cobro == id)
-                        .ToList(); // Ensure the reader is closed
+                    var cobroResult = db.SpConsultarCobros(null, null, null, true, null) // Provide null for idPersona
+                    .Where(c => c.Id_cobro == id)
+                    .ToList();
+                    // Ensure the reader is closed
 
                     cobro = cobroResult.Select(c => new ModelCobro
                     {
