@@ -41,15 +41,15 @@
     <a href="@Url.Action("GestionarCobro", "Condominio")" class="btn btn-success">Crear Cobro</a>
 </div>
 
-<table class="table table-bordered table-hover">
-    <thead>
+<table class="table table-bordered table-hover table-striped">
+    <thead class="text-center">
         <tr>
-            <th>#Cobro</th>
-            <th>#Casa</th>
-            <th>Propietario</th>
-            <th>Periodo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
+            <th style="font-weight: bold;"># Cobro</th>
+            <th style="font-weight: bold;">Casa</th>
+            <th style="font-weight: bold; text-align: left;">Cliente</th>
+            <th style="font-weight: bold;">Periodo</th>
+            <th style="font-weight: bold;">Estado</th>
+            <th style="font-weight: bold;">Acciones</th>
         </tr>
     </thead>
     <tbody>
@@ -58,11 +58,11 @@
             foreach (var cobro in Model)
             {
                 <tr>
-                    <td>@cobro.Id_cobro</td>
-                    <td>@cobro.Nombre_casa</td>
-                    <td>@cobro.Cliente</td>
-                    <td>@($"{cobro.Mes:D2}/{cobro.Anno}")</td>
-                    <td>@cobro.Estado</td>
+                    <td class="text-center">@cobro.Id_cobro</td>
+                    <td class="text-center">@cobro.Nombre_casa</td>
+                    <td class="text-left">@cobro.Cliente</td>
+                    <td class="text-center">@($"{cobro.Mes:D2}-{cobro.Anno}")</td>
+                    <td class="text-center">@cobro.Estado</td>
                     <td>
                         @Html.ActionLink("Editar", "GestionarCobro", "Condominio", new { id = cobro.Id_cobro }, new { @class = "btn btn-primary" })
                         <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
