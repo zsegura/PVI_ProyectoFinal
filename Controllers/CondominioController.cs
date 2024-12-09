@@ -444,7 +444,7 @@ namespace PVI_ProyectoFinal.Controllers
             var list = new List<SpListarServiciosResult>();
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                list = db.SpListarServicio(null).ToList();
+                list = db.SpListarServicios().ToList();
             }
             return View(list);
         }
