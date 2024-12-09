@@ -305,25 +305,22 @@ namespace PVI_ProyectoFinal.Controllers
 
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-
-                casa = db.SpListarCasas().Select(e => new ModelCasa
-
-
+                // Provide null for the optional @Estado parameter
+                casa = db.SpListarCasas(null).Select(e => new ModelCasa
                 {
-                    IdCasa = casa.IdCasa,
-                    NombreCasa = casa.NombreCasa,
-                    MetrosCuadrados = casa.MetrosCuadrados,
-                    NumeroHabitaciones = casa.NumeroHabitaciones,
-                    NumeroBanos = casa.NumeroBanos,
-                    NombrePersona = casa.NombrePersona,
-                    FechaConstruccion = casa.FechaConstruccion,
-                    Estado = casa.Estado,
-
+                    IdCasa = e.Id_casa,
+                    NombreCasa = e.Nombre_casa,
+                    MetrosCuadrados = e.Metros_cuadrados,
+                    NumeroHabitaciones = e.Numero_habitaciones,
+                    NumeroBanos = e.Numero_banos,
+                    NombrePersona = e.Propietario_nombre,
+                    FechaConstruccion = e.Fecha_construccion,
+                    Estado = e.Estado,
                 }).FirstOrDefault();
 
 
 
-                 Populate dropdown for Persona
+                // Populate dropdown for Persona
                 ViewBag.persona = db.SpRetornaPersona()
                     .Select(p => new SelectListItem
                     {
@@ -331,11 +328,11 @@ namespace PVI_ProyectoFinal.Controllers
                         Text = p.Nombre
                     })
                     .ToList();
-
-
             }
+
             return View(casa);
         }
+
 
 
 

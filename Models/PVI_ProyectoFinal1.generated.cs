@@ -761,6 +761,24 @@ namespace DataModels
 
 		#endregion
 
+		#region SpListarServicios
+
+		public static IEnumerable<SpListarServiciosResult> SpListarServicios(this PviProyectoFinalDB dataConnection)
+		{
+			return dataConnection.QueryProc<SpListarServiciosResult>("[dbo].[SpListarServicios]");
+		}
+
+		public partial class SpListarServiciosResult
+		{
+			[Column("id_servicio") ] public int      Id_servicio  { get; set; }
+			                         public string   Nombre       { get; set; }
+			                         public decimal? Precio       { get; set; }
+			[Column("id_categoria")] public int      Id_categoria { get; set; }
+			                         public string   Estado       { get; set; }
+		}
+
+		#endregion
+
 		#region SpPagarCobro
 
 		public static int SpPagarCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro, DateTime? @FechaPago, int? @IdPersona)
