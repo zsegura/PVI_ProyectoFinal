@@ -382,17 +382,15 @@ namespace DataModels
 	{
 		#region SpActualizarCobro
 
-		public static int SpActualizarCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro, decimal? @NuevoMonto, string @NuevosServicios, int? @IdPersona)
+		public static int SpActualizarCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro, string @NuevosServicios)
 		{
 			var parameters = new []
 			{
 				new DataParameter("@IdCobro",         @IdCobro,         LinqToDB.DataType.Int32),
-				new DataParameter("@NuevoMonto",      @NuevoMonto,      LinqToDB.DataType.Decimal),
 				new DataParameter("@NuevosServicios", @NuevosServicios, LinqToDB.DataType.VarChar)
 				{
 					Size = -1
-				},
-				new DataParameter("@IdPersona",       @IdPersona,       LinqToDB.DataType.Int32)
+				}
 			};
 
 			return dataConnection.ExecuteProc("[dbo].[spActualizarCobro]", parameters);

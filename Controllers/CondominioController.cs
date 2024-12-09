@@ -130,52 +130,67 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-
-
         [HttpPost]
         public ActionResult GestionarCobro(ModelCobro cobro)
         {
             string resultado;
+
             try
             {
                 using (var db = new PviProyectoFinalDB("MyDatabase"))
                 {
+                    // Check for valid Cliente
+                    if (cobro.IdCliente.HasValue && cobro.IdCliente > 0)
+                    {
+                        var isActive = db.Personas.Any(p => p.IdPersona == cobro.IdCliente && p.Estado == true);
+                        if (!isActive)
+                        {
+                            resultado = "The selected Persona is inactive or does not exist.";
+                            TempData["Resultado"] = resultado;
+                            return RedirectToAction("ConsultarCobros");
+                        }
+                    }
+
+                    // Prepare selected services as a comma-separated string
                     string serviciosString = cobro.ServiciosSeleccionados != null
                         ? string.Join(",", cobro.ServiciosSeleccionados.Distinct())
                         : string.Empty;
 
-                    if (cobro.Id == 0)
+                    if (cobro.Id == 0) // New Cobro
                     {
                         db.SpCrearCobro(
-                            cobro.IdCasa,
-                            cobro.Mes,
-                            cobro.Anno,
-                            cobro.Monto,
-                            serviciosString,
-                            cobro.IdCliente ?? 0
+                            cobro.IdCasa,            // IdCasa
+                            cobro.Mes,               // Mes
+                            cobro.Anno,              // Anno
+                            cobro.Monto,             // Monto
+                            serviciosString,         // Selected Services
+                            cobro.IdCliente ?? 0     // IdPersona
                         );
+
+                        resultado = "Cobro created successfully.";
                     }
-                    else
+                    else // Existing Cobro
                     {
                         db.SpActualizarCobro(
-                            cobro.Id,
-                            cobro.Monto,
-                            serviciosString,
-                            cobro.IdCliente ?? 0
+                            cobro.Id,               // Cobro ID
+                            serviciosString         // Updated Services
                         );
-                    }
 
-                    resultado = "Cobro guardado exitosamente.";
+                        resultado = "Cobro updated successfully.";
+                    }
                 }
             }
             catch (Exception ex)
             {
-                resultado = $"Error al guardar el cobro: {ex.Message}";
+                resultado = $"Error managing Cobro: {ex.Message}";
             }
 
             TempData["Resultado"] = resultado;
             return RedirectToAction("ConsultarCobros");
         }
+
+
+
 
 
 
@@ -283,7 +298,7 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        GET: Crear Casa
+        //GET: Crear Casa
         public ActionResult CrearCasa(int? id)
         {
             var casa = new ModelCasa();
@@ -332,7 +347,7 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        [HttpPost]
+        //[HttpPost]
         public JsonResult CrearCasa(ModelCasa casa)
         {
             string resultado;
@@ -363,7 +378,7 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        //////New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
+        //New method to handle the deletion process.This will use the stored procedure SpEliminarCobro.
 
 
         [HttpPost]
