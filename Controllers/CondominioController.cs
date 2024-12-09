@@ -285,7 +285,7 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        GET: Crear Casa
+        //GET: Crear Casa
         public ActionResult CrearCasa(int? id)
         {
             var casa = new ModelCasa();
@@ -310,7 +310,7 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-                // Populate dropdown for Persona
+                 Populate dropdown for Persona
                 ViewBag.persona = db.SpRetornaPersona()
                     .Select(p => new SelectListItem
                     {
@@ -390,6 +390,19 @@ namespace PVI_ProyectoFinal.Controllers
         }
 
 
+
+
+
+        // GET: ConsultarServicios 
+        public ActionResult ConsuktarServicios ()
+        {
+            var list = new List<SpListarServicios>();
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
+                list = db.spListarServicio(null).ToList();
+            }
+            return View(list);
+        }
 
 
 
