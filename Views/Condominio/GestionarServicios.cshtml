@@ -1,7 +1,32 @@
-﻿
+﻿@model List<DataModels.PviProyectoFinalDBStoredProcedures.SpListarServiciosResult>
 @{
     ViewBag.Title = "GestionarServicios";
 }
 
-<h2>GestionarServicios</h2>
+<h2>Gestionar Servicios</h2>
 
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>id</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Categoria</th>
+        <th>Estado</th>
+        <th></th>
+    </tr>
+
+    @foreach (var servicios  in Model)
+    {
+        <tr>
+            <td>@servicios.Id_sevicio</td>
+            <td>@servicios.Nombre</td>
+            <td>@servicios.Precio</td>
+            <td>@servicios.id_categoria</td>
+            <td>@servicios.Estado</td>
+            <td>
+                @Html.ActionLink("Consultar", "GestionarServicios", "Condominio", new { id = servicios.Id_servicio }, new { @class = "btn btn-primary" })
+            </td>
+        </tr>
+    }
+</table>

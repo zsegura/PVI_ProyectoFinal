@@ -442,12 +442,12 @@ namespace PVI_ProyectoFinal.Controllers
 
 
         // GET: ConsultarServicios 
-        public ActionResult ConsuktarServicios ()
+        public ActionResult ConsultarServicios ()
         {
-            var list = new List<SpListarServicios>();
+            var list = new List<SpListarServiciosResult>();
             using (var db = new PviProyectoFinalDB("MyDatabase"))
             {
-                list = db.spListarServicio(null).ToList();
+                list = db.SpListarServicio(null).ToList();
             }
             return View(list);
         }
@@ -459,3 +459,4 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 }
+
