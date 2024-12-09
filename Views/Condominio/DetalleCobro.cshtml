@@ -48,8 +48,20 @@
 
 @if (Model.Estado == "Pendiente")
 {
+    //Editar
     <a href="@Url.Action("GestionarCobro", "Condominio", new { id = Model.Id_cobro })" class="btn btn-primary">Editar</a>
-    <a href="@Url.Action("Pagar", "Condominio", new { id = Model.Id_cobro })" class="btn btn-success">Pagar</a>
+
+    //Pagar
+    <form action="@Url.Action("Pagar", "Condominio")" method="post" style="display:inline;">
+        <input type="hidden" name="id" value="@Model.Id_cobro" />
+        <button type="submit" class="btn btn-success" onclick="return confirm('¿Está seguro de que desea pagar este cobro?');">
+            Pagar
+        </button>
+    </form>
+
+
+
+    //Eliminar
     <form action="@Url.Action("EliminarCobro", "Condominio")" method="post" style="display:inline;">
         <input type="hidden" name="id" value="@Model.Id_cobro" />
         <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este cobro?');">Eliminar</button>
