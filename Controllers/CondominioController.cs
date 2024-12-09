@@ -299,45 +299,43 @@ namespace PVI_ProyectoFinal.Controllers
 
 
         //GET: Crear Casa
-        //public ActionResult CrearCasa(int? id)
-        //{
-        //    var casa = new ModelCasa();
+        public ActionResult CrearCasa(int? id)
+        {
+            var casa = new ModelCasa();
 
-        //    using (var db = new PviProyectoFinalDB("MyDatabase"))
-        //    {
+            using (var db = new PviProyectoFinalDB("MyDatabase"))
+            {
 
-        //        casa = db.SpListarCasas().Select(e => new ModelCasa
-
-
-        //        {
-        //            IdCasa = casa.IdCasa,
-        //            NombreCasa = casa.NombreCasa,
-        //            MetrosCuadrados = casa.MetrosCuadrados,
-        //            NumeroHabitaciones = casa.NumeroHabitaciones,
-        //            NumeroBanos = casa.NumeroBanos,
-        //            NombrePersona = casa.NombrePersona,
-        //            FechaConstruccion = casa.FechaConstruccion,
-        //            Estado = casa.Estado,
-
-        //        }).FirstOrDefault();
+                casa = db.SpListarCasas().Select(e => new ModelCasa
 
 
+                {
+                    IdCasa = casa.IdCasa,
+                    NombreCasa = casa.NombreCasa,
+                    MetrosCuadrados = casa.MetrosCuadrados,
+                    NumeroHabitaciones = casa.NumeroHabitaciones,
+                    NumeroBanos = casa.NumeroBanos,
+                    NombrePersona = casa.NombrePersona,
+                    FechaConstruccion = casa.FechaConstruccion,
+                    Estado = casa.Estado,
 
-        //        // Populate dropdown for Persona
-        //        ViewBag.persona = db.SpRetornaPersona()
-        //            .Select(p => new SelectListItem
-        //            {
-        //                Value = p.Id_persona.ToString(),
-        //                Text = p.Nombre
-        //            })
-        //            .ToList();
-
-
-        //    }
-        //    return View(casa);
-        //}
+                }).FirstOrDefault();
 
 
+
+                // Populate dropdown for Persona
+                ViewBag.persona = db.SpRetornaPersona()
+                    .Select(p => new SelectListItem
+                    {
+                        Value = p.Id_persona.ToString(),
+                        Text = p.Nombre
+                    })
+                    .ToList();
+
+
+            }
+            return View(casa);
+        }
 
 
 
@@ -347,33 +345,35 @@ namespace PVI_ProyectoFinal.Controllers
 
 
 
-        //[HttpPost]
-        //public JsonResult CrearCasa(ModelCasa casa)
-        //{
-        //    string resultado;
-        //    try
-        //    {
-        //        using (var db = new PviProyectoFinalDB("MyDatabase"))
-        //        {
-        //            db.SpCrearCasa(
-        //                casa.NombreCasa,
-        //                casa.MetrosCuadrados,
-        //                casa.NumeroHabitaciones,
-        //                casa.NumeroBanos,
-        //                casa.NombrePersona,
-        //                casa.FechaConstruccion,
-        //                casa.Estado
 
-        //            );
-        //            resultado = "La casa ha sido registrada exitosamente.";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        resultado = $"Error al registrar la casa: {ex.Message}";
-        //    }
-        //    return Json(resultado);
-        //}
+
+        [HttpPost]
+        public JsonResult CrearCasa(ModelCasa casa)
+        {
+            string resultado;
+            try
+            {
+                using (var db = new PviProyectoFinalDB("MyDatabase"))
+                {
+                    db.SpCrearCasa(
+                        casa.NombreCasa,
+                        casa.MetrosCuadrados,
+                        casa.NumeroHabitaciones,
+                        casa.NumeroBanos,
+                        casa.NombrePersona,
+                        casa.FechaConstruccion,
+                        casa.Estado
+
+                    );
+                    resultado = "La casa ha sido registrada exitosamente.";
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = $"Error al registrar la casa: {ex.Message}";
+            }
+            return Json(resultado);
+        }
 
 
 
