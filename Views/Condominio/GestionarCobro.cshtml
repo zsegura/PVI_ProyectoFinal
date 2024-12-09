@@ -1,61 +1,75 @@
 ﻿@model PVI_ProyectoFinal.Models.ModelCobro
 
-<h2>Actualizar Cobro</h2>
+@if (ViewBag.IsEdit)
+{
+    <input type="hidden" name="IdCliente" value="@Model.IdCliente" />
+    <input type="hidden" name="IdCasa" value="@Model.IdCasa" />
+    <input type="hidden" name="Anno" value="@Model.Anno" />
+    <input type="hidden" name="Mes" value="@Model.Mes" />
+}
+
+<h2>@(ViewBag.IsEdit ? "Actualizar Cobro" : "Crear Cobro")</h2>
 
 <form method="post" id="cobroForm">
     @Html.HiddenFor(model => model.Id)
 
+    <!-- Cliente -->
     <div class="mb-3">
         <label class="form-label" for="IdCliente">Cliente:</label>
-        <select id="IdCliente" name="IdCliente" class="form-control">
+        <select id="IdCliente" name="IdCliente" class="form-control" @(ViewBag.IsEdit ? "disabled" : "")>
+            <option value="">Seleccione un cliente</option>
             @foreach (var cliente in (List<SelectListItem>)ViewBag.Clientes)
             {
-                <option value="@cliente.Value" @(cliente.Value == Model.IdCliente?.ToString() ? "selected" : "")>
+                <option value="@cliente.Value" @(cliente.Selected ? "selected" : "")>
                     @cliente.Text
                 </option>
             }
         </select>
     </div>
 
+    <!-- Casa -->
     <div class="mb-3">
         <label class="form-label" for="IdCasa">Casa:</label>
-        <select id="IdCasa" name="IdCasa" class="form-control">
+        <select id="IdCasa" name="IdCasa" class="form-control" @(ViewBag.IsEdit ? "disabled" : "")>
             <option value="">Seleccione una casa</option>
             @foreach (var casa in (List<SelectListItem>)ViewBag.Casas)
             {
-                <option value="@casa.Value" @(casa.Value == Model.IdCasa.ToString() ? "selected" : "")>
+                <option value="@casa.Value" @(casa.Selected ? "selected" : "")>
                     @casa.Text
                 </option>
             }
         </select>
     </div>
 
+    <!-- Año -->
     <div class="mb-3">
         <label class="form-label" for="Anno">Año:</label>
-        <select id="Anno" name="Anno" class="form-control">
+        <select id="Anno" name="Anno" class="form-control" @(ViewBag.IsEdit ? "disabled" : "")>
             <option value="">Seleccione un año</option>
             @foreach (var year in (List<SelectListItem>)ViewBag.AnnoOptions)
             {
-                <option value="@year.Value" @(year.Value == Model.Anno.ToString() ? "selected" : "")>
+                <option value="@year.Value" @(year.Selected ? "selected" : "")>
                     @year.Text
                 </option>
             }
         </select>
     </div>
 
+    <!-- Mes -->
     <div class="mb-3">
         <label class="form-label" for="Mes">Mes:</label>
-        <select id="Mes" name="Mes" class="form-control">
+        <select id="Mes" name="Mes" class="form-control" @(ViewBag.IsEdit ? "disabled" : "")>
             <option value="">Seleccione un mes</option>
             @foreach (var month in (List<SelectListItem>)ViewBag.MesOptions)
             {
-                <option value="@month.Value" @(month.Value == Model.Mes.ToString() ? "selected" : "")>
+                <option value="@month.Value" @(month.Selected ? "selected" : "")>
                     @month.Text
                 </option>
             }
         </select>
     </div>
 
+    <!-- Servicios -->
     <div class="mb-3">
         <label class="form-label" for="ServiciosSeleccionados">Servicios:</label>
         @foreach (var servicio in (List<SelectListItem>)ViewBag.Servicios)
@@ -72,6 +86,7 @@
         <div id="service-error" class="text-danger" style="display:none;">Seleccione al menos un servicio.</div>
     </div>
 
+    <!-- Submit Buttons -->
     <input type="submit" class="btn btn-primary" value="Guardar Cobro" />
     <a href="@Url.Action("ConsultarCobros", "Condominio")" class="btn btn-secondary">Regresar</a>
 </form>
@@ -82,6 +97,8 @@
         if (checkboxes.length === 0) {
             e.preventDefault();
             document.getElementById('service-error').style.display = 'block';
+            return;
         }
+        document.getElementById('service-error').style.display = 'none';
     });
 </script>

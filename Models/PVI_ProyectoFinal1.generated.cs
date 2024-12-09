@@ -206,6 +206,7 @@ namespace DataModels
 		[Column("estado"),       Nullable            ] public string    Estado      { get; set; } // varchar(50)
 		[Column("monto"),        Nullable            ] public decimal?  Monto       { get; set; } // decimal(15, 2)
 		[Column("fecha_pagada"), Nullable            ] public DateTime? FechaPagada { get; set; } // date
+		[Column("id_persona"),   Nullable            ] public int?      IdPersona   { get; set; } // int
 
 		#region Associations
 
@@ -228,18 +229,6 @@ namespace DataModels
 		public IEnumerable<DetalleCobro> DetalleCobroidcobroes { get; set; }
 
 		/// <summary>
-		/// FK__DetalleCo__id_co__4D94879B_BackReference (dbo.DetalleCobro)
-		/// </summary>
-		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=true)]
-		public IEnumerable<DetalleCobro> DetalleCoidco4D94879B { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_co__4E88ABD4_BackReference (dbo.DetalleCobro)
-		/// </summary>
-		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=true)]
-		public IEnumerable<DetalleCobro> DetalleCoidco4E88Abds { get; set; }
-
-		/// <summary>
 		/// FK_Cobros_id_casa (dbo.Casas)
 		/// </summary>
 		[Association(ThisKey="IdCasa", OtherKey="IdCasa", CanBeNull=true)]
@@ -257,40 +246,22 @@ namespace DataModels
 		[Association(ThisKey="IdCasa", OtherKey="IdCasa", CanBeNull=true)]
 		public Casa Idcasa4CA { get; set; }
 
+		/// <summary>
+		/// FK_Cobros_Persona (dbo.Persona)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
+		public Persona Persona { get; set; }
+
 		#endregion
 	}
 
 	[Table(Schema="dbo", Name="DetalleCobro")]
 	public partial class DetalleCobro
 	{
-		[Column("id_servicio"), PrimaryKey, NotNull] public int IdServicio { get; set; } // int
-		[Column("id_cobro"),                NotNull] public int IdCobro    { get; set; } // int
+		[Column("id_servicio"), PrimaryKey(1), NotNull] public int IdServicio { get; set; } // int
+		[Column("id_cobro"),    PrimaryKey(2), NotNull] public int IdCobro    { get; set; } // int
 
 		#region Associations
-
-		/// <summary>
-		/// FK__DetalleCo__id_co__4D94879B (dbo.Cobros)
-		/// </summary>
-		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=false)]
-		public Cobro DetalleCoidco4D94879B { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_co__4E88ABD4 (dbo.Cobros)
-		/// </summary>
-		[Association(ThisKey="IdCobro", OtherKey="IdCobro", CanBeNull=false)]
-		public Cobro DetalleCoidco4E88ABD { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_se__4F7CD00D (dbo.Servicios)
-		/// </summary>
-		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=false)]
-		public Servicio DetalleCoidse4F7CD00D { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_se__5070F446 (dbo.Servicios)
-		/// </summary>
-		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=false)]
-		public Servicio DetalleCoidse5070F { get; set; }
 
 		/// <summary>
 		/// FK_DetalleCobro_id_cobro (dbo.Cobros)
@@ -365,6 +336,12 @@ namespace DataModels
 		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
 		public IEnumerable<Casa> Casasidpersonas { get; set; }
 
+		/// <summary>
+		/// FK_Cobros_Persona_BackReference (dbo.Cobros)
+		/// </summary>
+		[Association(ThisKey="IdPersona", OtherKey="IdPersona", CanBeNull=true)]
+		public IEnumerable<Cobro> Cobros { get; set; }
+
 		#endregion
 	}
 
@@ -384,19 +361,7 @@ namespace DataModels
 		/// FK_DetalleCobro_id_servicio_BackReference (dbo.DetalleCobro)
 		/// </summary>
 		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=true)]
-		public DetalleCobro DetalleCobroidservicio { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_se__4F7CD00D_BackReference (dbo.DetalleCobro)
-		/// </summary>
-		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=true)]
-		public DetalleCobro DetalleCoidse4F7CD00D { get; set; }
-
-		/// <summary>
-		/// FK__DetalleCo__id_se__5070F446_BackReference (dbo.DetalleCobro)
-		/// </summary>
-		[Association(ThisKey="IdServicio", OtherKey="IdServicio", CanBeNull=true)]
-		public DetalleCobro DetalleCoidse5070F { get; set; }
+		public IEnumerable<DetalleCobro> DetalleCobroidservicios { get; set; }
 
 		/// <summary>
 		/// FK__Servicios__id_ca__5165187F (dbo.Categorias)
@@ -417,17 +382,15 @@ namespace DataModels
 	{
 		#region SpActualizarCobro
 
-		public static int SpActualizarCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro, decimal? @NuevoMonto, string @NuevosServicios, int? @IdPersona)
+		public static int SpActualizarCobro(this PviProyectoFinalDB dataConnection, int? @IdCobro, string @NuevosServicios)
 		{
 			var parameters = new []
 			{
 				new DataParameter("@IdCobro",         @IdCobro,         LinqToDB.DataType.Int32),
-				new DataParameter("@NuevoMonto",      @NuevoMonto,      LinqToDB.DataType.Decimal),
 				new DataParameter("@NuevosServicios", @NuevosServicios, LinqToDB.DataType.VarChar)
 				{
 					Size = -1
-				},
-				new DataParameter("@IdPersona",       @IdPersona,       LinqToDB.DataType.Int32)
+				}
 			};
 
 			return dataConnection.ExecuteProc("[dbo].[spActualizarCobro]", parameters);
@@ -500,7 +463,7 @@ namespace DataModels
 
 		#region SpConsultarCobros
 
-		public static IEnumerable<SpConsultarCobrosResult> SpConsultarCobros(this PviProyectoFinalDB dataConnection, string @ClienteNombre, int? @Mes, int? @Anno, bool? @IsEmployee, int? @IdPersona)
+		public static IEnumerable<SpConsultarCobrosResult> SpConsultarCobros(this PviProyectoFinalDB dataConnection, string @ClienteNombre, int? @Mes, int? @Anno, int? @IdPersona)
 		{
 			var parameters = new []
 			{
@@ -510,7 +473,6 @@ namespace DataModels
 				},
 				new DataParameter("@Mes",           @Mes,           LinqToDB.DataType.Int32),
 				new DataParameter("@Anno",          @Anno,          LinqToDB.DataType.Int32),
-				new DataParameter("@IsEmployee",    @IsEmployee,    LinqToDB.DataType.Boolean),
 				new DataParameter("@IdPersona",     @IdPersona,     LinqToDB.DataType.Int32)
 			};
 
@@ -525,6 +487,7 @@ namespace DataModels
 			[Column("monto")      ] public decimal? Monto       { get; set; }
 			[Column("estado")     ] public string   Estado      { get; set; }
 			[Column("nombre_casa")] public string   Nombre_casa { get; set; }
+			                        public int?     Id_cliente  { get; set; }
 			                        public string   Cliente     { get; set; }
 		}
 
@@ -956,10 +919,11 @@ namespace DataModels
 				t.IdCobro == IdCobro);
 		}
 
-		public static DetalleCobro Find(this ITable<DetalleCobro> table, int IdServicio)
+		public static DetalleCobro Find(this ITable<DetalleCobro> table, int IdServicio, int IdCobro)
 		{
 			return table.FirstOrDefault(t =>
-				t.IdServicio == IdServicio);
+				t.IdServicio == IdServicio &&
+				t.IdCobro    == IdCobro);
 		}
 
 		public static Persona Find(this ITable<Persona> table, int IdPersona)
