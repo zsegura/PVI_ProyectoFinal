@@ -13,10 +13,11 @@ namespace PVI_ProyectoFinal.Models
         public int MetrosCuadrados { get; set; }
         public int NumeroBanos { get; set; }
         public int NumeroHabitaciones { get; set; }
+        public decimal Precio { get; set; }
         public DateTime FechaConstruccion { get; set; }
         public bool Estado { get; set; }
-        public string NombrePersona { get; set; }  // Owner's name
-    }
+        public string NombrePersona { get; set; }  // Owner's name
+    }
 
 
 }

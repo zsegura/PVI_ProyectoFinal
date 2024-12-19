@@ -278,8 +278,6 @@ namespace PVI_ProyectoFinal.Controllers
             }
         }
 
-
-
         // GET: ConsultarCasas
         public ActionResult ConsultarCasas()
         {
@@ -290,13 +288,6 @@ namespace PVI_ProyectoFinal.Controllers
             }
             return View(list);
         }
-
-
-
-
-
-
-
 
         //GET: Crear Casa
         public ActionResult CrearCasa(int? id)
@@ -333,44 +324,35 @@ namespace PVI_ProyectoFinal.Controllers
             return View(casa);
         }
 
+        //[HttpPost]
+        //public JsonResult CrearCasa(ModelCasa casa)
+        //{
+        //    string resultado;
+        //    try
+        //    {
+        //        using (var db = new PviProyectoFinalDB("MyDatabase"))
+        //        {
+        //            db.SpCrearCasa(
+        //                casa.NombreCasa,
+        //                casa.MetrosCuadrados,
+        //                casa.NumeroHabitaciones,
+        //                casa.NumeroBanos,
+        //                casa.Precio,
+        //                casa.NombrePersona,
+        //                casa.FechaConstruccion,
+        //                casa.Estado
 
+        //            );
+        //            resultado = "La casa ha sido registrada exitosamente.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultado = $"Error al registrar la casa: {ex.Message}";
+        //    }
+        //    return Json(resultado);
 
-
-
-
-
-
-
-
-
-
-        [HttpPost]
-        public JsonResult CrearCasa(ModelCasa casa)
-        {
-            string resultado;
-            try
-            {
-                using (var db = new PviProyectoFinalDB("MyDatabase"))
-                {
-                    db.SpCrearCasa(
-                        casa.NombreCasa,
-                        casa.MetrosCuadrados,
-                        casa.NumeroHabitaciones,
-                        casa.NumeroBanos,
-                        casa.Precio,
-                        casa.IdPersona,
-                        casa.FechaConstruccion,
-                        casa.Estado // Include Estado parameter
-                    );
-                    resultado = "La casa ha sido registrada exitosamente.";
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = $"Error al registrar la casa: {ex.Message}";
-            }
-            return Json(resultado);
-        }
+        //}
 
 
 
