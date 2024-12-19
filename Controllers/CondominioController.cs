@@ -357,10 +357,10 @@ namespace PVI_ProyectoFinal.Controllers
                         casa.MetrosCuadrados,
                         casa.NumeroHabitaciones,
                         casa.NumeroBanos,
-                        casa.NombrePersona,
+                        casa.Precio,
+                        casa.IdPersona,
                         casa.FechaConstruccion,
-                        casa.Estado
-
+                        casa.Estado // Include Estado parameter
                     );
                     resultado = "La casa ha sido registrada exitosamente.";
                 }
@@ -371,6 +371,7 @@ namespace PVI_ProyectoFinal.Controllers
             }
             return Json(resultado);
         }
+
 
 
 

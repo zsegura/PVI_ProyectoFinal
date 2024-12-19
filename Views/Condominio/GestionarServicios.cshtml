@@ -16,17 +16,18 @@
         <th></th>
     </tr>
 
-    @foreach (var servicios  in Model)
+    @foreach (var servicios in Model)
     {
         <tr>
-            <td>@servicios.Id_sevicio</td>
+            <td>@servicios.Id_servicio</td> <!-- Correct property name -->
             <td>@servicios.Nombre</td>
             <td>@servicios.Precio</td>
-            <td>@servicios.id_categoria</td>
+            <td>@servicios.Id_categoria</td> <!-- Correct property name -->
             <td>@servicios.Estado</td>
             <td>
                 @Html.ActionLink("Consultar", "GestionarServicios", "Condominio", new { id = servicios.Id_servicio }, new { @class = "btn btn-primary" })
             </td>
         </tr>
     }
+
 </table>
